@@ -249,6 +249,19 @@ function LanyardBand({
     }
   }, [hovered, dragged]);
 
+  // Ensure drag is cleanly released even if pointer exits the window
+  useEffect(() => {
+    const handleGlobalRelease = () => {
+      if (dragged) drag(false);
+    };
+    window.addEventListener('pointerup', handleGlobalRelease);
+    window.addEventListener('pointercancel', handleGlobalRelease);
+    return () => {
+      window.removeEventListener('pointerup', handleGlobalRelease);
+      window.removeEventListener('pointercancel', handleGlobalRelease);
+    };
+  }, [dragged]);
+
   const ANCHOR_Y = 8.0;
 
   const timeRef = useRef(0);
@@ -258,6 +271,11 @@ function LanyardBand({
   const swingDoneFired = useRef(false);
   const dockedFired = useRef(false);
   const anchorX = useRef(0);
+
+  // Velocity tracking & momentum transfer
+  const lastDragPos = useRef(new THREE.Vector3());
+  const lastVelocity = useRef(new THREE.Vector3());
+  const wasDragged = useRef(false);
 
   // For reduced motion: teleport anchor to final position on first frame
   const reducedMotionApplied = useRef(false);
@@ -351,18 +369,70 @@ function LanyardBand({
 
     fixed.current?.setNextKinematicTranslation({ x: anchorX.current, y: ANCHOR_Y, z: 0 });
 
-    // ── Drag interaction (active in all phases) ──
+    // ── Drag interaction (active in all phases: slinky elasticity) ──
     if (dragged) {
       vec.set(state.pointer.x, state.pointer.y, 0.5).unproject(state.camera);
       dir.copy(vec).sub(state.camera.position).normalize();
       vec.add(dir.multiplyScalar(state.camera.position.length()));
+
+      const targetPos = new THREE.Vector3(
+        vec.x - dragged.x,
+        vec.y - dragged.y,
+        vec.z - dragged.z
+      );
+
+      // Generous safety clamp (30 units) to allow full downward slinky stretch while preventing numerical overflow
+      const fixedTranslation = fixed.current?.translation() || { x: anchorX.current, y: ANCHOR_Y, z: 0 };
+      const distFromAnchor = targetPos.distanceTo(new THREE.Vector3(fixedTranslation.x, fixedTranslation.y, fixedTranslation.z));
+      if (distFromAnchor > 30) {
+        targetPos.sub(new THREE.Vector3(fixedTranslation.x, fixedTranslation.y, fixedTranslation.z))
+          .setLength(30)
+          .add(new THREE.Vector3(fixedTranslation.x, fixedTranslation.y, fixedTranslation.z));
+      }
+
+      // Track drag velocity for smooth momentum on release
+      if (dt > 0) {
+        lastVelocity.current.copy(targetPos).sub(lastDragPos.current).divideScalar(dt);
+        const speed = lastVelocity.current.length();
+        if (speed > 25) lastVelocity.current.setLength(25);
+      }
+      lastDragPos.current.copy(targetPos);
+
       [card, j1, j2, j3, fixed].forEach(r => r.current?.wakeUp());
       card.current?.setNextKinematicTranslation({
-        x: vec.x - dragged.x,
-        y: vec.y - dragged.y,
-        z: vec.z - dragged.z
+        x: targetPos.x,
+        y: targetPos.y,
+        z: targetPos.z
       });
     }
+
+    // When drag is released: transfer momentum to dynamic card body
+    if (!dragged && wasDragged.current) {
+      wasDragged.current = false;
+      if (card.current) {
+        card.current.setLinvel(lastVelocity.current, true);
+      }
+    }
+    if (dragged) {
+      wasDragged.current = true;
+    }
+
+    // ── Self-healing NaN & Frustum safety guard ──
+    const cPos = card.current?.translation();
+    if (cPos) {
+      if (isNaN(cPos.x) || isNaN(cPos.y) || isNaN(cPos.z) || Math.abs(cPos.x) > 30 || Math.abs(cPos.y) > 30) {
+        card.current.setTranslation({ x: anchorX.current, y: 1.0, z: 0 }, true);
+        card.current.setLinvel({ x: 0, y: 0, z: 0 }, true);
+        card.current.setAngvel({ x: 0, y: 0, z: 0 }, true);
+      }
+    }
+    [j1, j2, j3].forEach((jRef, idx) => {
+      const p = jRef.current?.translation();
+      if (p && (isNaN(p.x) || isNaN(p.y) || isNaN(p.z))) {
+        jRef.current.setTranslation({ x: anchorX.current, y: ANCHOR_Y - (idx + 1) * 1.2, z: 0 }, true);
+        jRef.current.setLinvel({ x: 0, y: 0, z: 0 }, true);
+      }
+    });
 
     // ── Ribbon curve ──
     if (fixed.current && j1.current && j2.current && j3.current && card.current) {
@@ -411,16 +481,18 @@ function LanyardBand({
             onPointerOver={() => hover(true)}
             onPointerOut={() => hover(false)}
             onPointerUp={(e) => {
-              e.target.releasePointerCapture?.(e.pointerId);
+              e.stopPropagation?.();
+              e.nativeEvent?.target?.releasePointerCapture?.(e.pointerId);
               drag(false);
             }}
             onPointerDown={(e) => {
-              e.target.setPointerCapture?.(e.pointerId);
+              e.stopPropagation?.();
+              e.nativeEvent?.target?.setPointerCapture?.(e.pointerId);
               drag(new THREE.Vector3().copy(e.point).sub(vec.copy(card.current.translation())));
             }}
           >
             {nodes?.card && (
-              <mesh geometry={cardGeometry || nodes.card.geometry}>
+              <mesh geometry={cardGeometry || nodes.card.geometry} frustumCulled={false}>
                 <meshPhysicalMaterial
                   map={cardMap}
                   map-anisotropy={16}
@@ -433,17 +505,17 @@ function LanyardBand({
             )}
             <group position={[0, 0.042, 0]}>
               {nodes?.clip && (
-                <mesh geometry={nodes.clip.geometry} material={materials.metal} material-roughness={0.2} />
+                <mesh geometry={nodes.clip.geometry} material={materials.metal} material-roughness={0.2} frustumCulled={false} />
               )}
               {nodes?.clamp && (
-                <mesh geometry={nodes.clamp.geometry} material={materials.metal} />
+                <mesh geometry={nodes.clamp.geometry} material={materials.metal} frustumCulled={false} />
               )}
             </group>
           </group>
         </RigidBody>
       </group>
 
-      <mesh ref={band}>
+      <mesh ref={band} frustumCulled={false}>
         <meshLineGeometry />
         <meshLineMaterial
           color="#ffffff"
