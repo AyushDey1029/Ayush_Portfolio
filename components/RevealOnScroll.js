@@ -5,8 +5,7 @@ export default function RevealOnScroll({
   children,
   className = '',
   delay = 0,
-  threshold = 0.15,
-  direction = 'up',
+  threshold = 0.1,
 }) {
   const ref = useRef(null);
   const [isVisible, setIsVisible] = useState(false);
@@ -17,12 +16,11 @@ export default function RevealOnScroll({
 
     const observer = new IntersectionObserver(
       ([entry]) => {
-        // Toggle visibility based on entry so it animates BOTH when scrolling down and scrolling up
         setIsVisible(entry.isIntersecting);
       },
       {
         threshold,
-        rootMargin: '0px 0px -80px 0px',
+        rootMargin: '0px 0px -40px 0px',
       }
     );
 
@@ -36,28 +34,23 @@ export default function RevealOnScroll({
   return (
     <div
       ref={ref}
-      className={`reveal-container ${isVisible ? 'is-visible' : 'is-hidden'} ${className}`}
-      style={{
-        transitionDelay: `${delay}ms`,
-      }}
+      className={`reveal-wrapper ${isVisible ? 'visible' : 'hidden'} ${className}`}
+      style={{ transitionDelay: `${delay}ms` }}
     >
       {children}
       <style jsx>{`
-        .reveal-container {
-          transition: opacity 0.75s cubic-bezier(0.16, 1, 0.3, 1),
-            transform 0.75s cubic-bezier(0.16, 1, 0.3, 1),
-            filter 0.75s cubic-bezier(0.16, 1, 0.3, 1);
-          will-change: opacity, transform, filter;
+        .reveal-wrapper {
+          transition: opacity 0.55s cubic-bezier(0.2, 0.8, 0.2, 1),
+            transform 0.55s cubic-bezier(0.2, 0.8, 0.2, 1);
+          will-change: opacity, transform;
         }
-        .is-hidden {
-          opacity: 0;
-          transform: translateY(40px) scale(0.97);
-          filter: blur(4px);
+        .hidden {
+          opacity: 0.15;
+          transform: translateY(20px);
         }
-        .is-visible {
+        .visible {
           opacity: 1;
-          transform: translateY(0) scale(1);
-          filter: blur(0px);
+          transform: translateY(0);
         }
       `}</style>
     </div>

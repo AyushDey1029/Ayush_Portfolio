@@ -1,54 +1,116 @@
 import React from 'react';
-import { Briefcase, CheckCircle2 } from 'lucide-react';
+import { Briefcase } from 'lucide-react';
 
 export default function Experience({ experienceData = [] }) {
   const hasExperience = experienceData && experienceData.length > 0;
 
   return (
-    <section id="experience" className="section animate-fade-in">
-      <h2 className="section-title">Professional Experience</h2>
+    <div>
+      <div className="section-header">
+        <span className="section-label">Trajectory</span>
+        <h2 className="section-title">Experience</h2>
+      </div>
+
       {hasExperience ? (
-        <div style={{ display: 'flex', flexDirection: 'column', gap: '1.5rem' }}>
+        <div className="exp-list">
           {experienceData.map((exp, idx) => (
-            <div key={idx} className="glass-card experience-card">
-              <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', flexWrap: 'wrap', gap: '1rem', marginBottom: '0.8rem' }}>
-                <div style={{ display: 'flex', alignItems: 'center', gap: '1rem' }}>
-                  <div style={{ padding: '0.8rem', background: 'rgba(88, 166, 255, 0.1)', borderRadius: '12px' }}>
-                    <Briefcase size={24} color="var(--accent-color)" />
-                  </div>
-                  <div>
-                    <h3 style={{ fontSize: '1.3rem', color: '#fff' }}>{exp.Role}</h3>
-                    <p style={{ color: 'var(--accent-color)', fontWeight: '500' }}>{exp.Company}</p>
-                  </div>
+            <div key={idx} className="exp-item">
+              <div className="exp-top">
+                <div>
+                  <h3 className="exp-role">{exp.Role}</h3>
+                  <p className="exp-company">{exp.Company}</p>
                 </div>
-                <span style={{ fontSize: '0.9rem', color: 'var(--text-secondary)' }}>{exp.Duration}</span>
+                <span className="exp-duration">{exp.Duration}</span>
               </div>
-              {exp.Details && <p style={{ color: 'var(--text-primary)', marginTop: '0.5rem' }}>{exp.Details}</p>}
+              {exp.Details && <p className="exp-details">{exp.Details}</p>}
             </div>
           ))}
         </div>
       ) : (
-        <div className="glass-card" style={{ textAlign: 'center', padding: '3rem 2rem' }}>
-          <div style={{ display: 'inline-flex', padding: '1rem', background: 'rgba(88, 166, 255, 0.1)', borderRadius: '50%', marginBottom: '1.5rem' }}>
-            <Briefcase size={36} color="var(--accent-color)" />
+        <div className="open-box">
+          <div className="open-header">
+            <span className="status-pill">
+              <span className="status-dot" />
+              Open to Roles
+            </span>
           </div>
-          <h3 style={{ fontSize: '1.5rem', marginBottom: '0.5rem' }}>Open to Opportunities</h3>
-          <p style={{ maxWidth: '600px', margin: '0 auto 1.5rem auto', color: 'var(--text-secondary)' }}>
-            Currently expanding technical horizons with production-grade AI & Full-Stack engineering projects. Available for high-impact software engineering and AI/ML internships and full-time roles.
+          <h3 className="open-title">Seeking Full-Stack & Machine Learning Engineering Roles</h3>
+          <p className="open-desc">
+            Equipped with end-to-end production experience architecting crowdfunding platforms with automated LLM trust scoring, building multilingual NLP advisory pipelines, and training deep autoencoders in PyTorch. Actively seeking software engineering and AI/ML internships and full-time opportunities.
           </p>
-          <div style={{ display: 'flex', justifyContent: 'center', gap: '2rem', flexWrap: 'wrap', color: 'var(--text-primary)', fontSize: '0.95rem' }}>
-            <span style={{ display: 'flex', alignItems: 'center', gap: '0.5rem' }}>
-              <CheckCircle2 size={18} color="#34d399" /> Full-Stack Development
-            </span>
-            <span style={{ display: 'flex', alignItems: 'center', gap: '0.5rem' }}>
-              <CheckCircle2 size={18} color="#34d399" /> Generative AI & LLMs
-            </span>
-            <span style={{ display: 'flex', alignItems: 'center', gap: '0.5rem' }}>
-              <CheckCircle2 size={18} color="#34d399" /> Deep Learning (PyTorch)
-            </span>
+          <div className="focus-pills">
+            <span className="mono-tag">Full-Stack Development (React, Node.js, Express, MongoDB)</span>
+            <span className="mono-tag">Machine Learning & Deep Learning (PyTorch, OpenCV)</span>
+            <span className="mono-tag">Generative AI & LLM Systems</span>
           </div>
         </div>
       )}
-    </section>
+
+      <style jsx>{`
+        .exp-list {
+          display: flex;
+          flex-direction: column;
+          gap: 1.25rem;
+        }
+        .exp-item {
+          background: var(--surface-1);
+          border: 1px solid var(--border-subtle);
+          border-radius: 12px;
+          padding: 1.5rem;
+        }
+        .exp-top {
+          display: flex;
+          justify-content: space-between;
+          align-items: flex-start;
+          margin-bottom: 0.75rem;
+        }
+        .exp-role {
+          font-size: 1.15rem;
+          font-weight: 600;
+          color: var(--text-primary);
+        }
+        .exp-company {
+          color: var(--accent-text);
+          font-size: 0.9rem;
+        }
+        .exp-duration {
+          font-family: var(--font-mono);
+          font-size: 0.8rem;
+          color: var(--text-muted);
+        }
+        .exp-details {
+          color: var(--text-secondary);
+          font-size: 0.92rem;
+          line-height: 1.6;
+        }
+        .open-box {
+          background: var(--surface-1);
+          border: 1px solid var(--border-subtle);
+          border-radius: 12px;
+          padding: 2.25rem;
+        }
+        .open-header {
+          margin-bottom: 1rem;
+        }
+        .open-title {
+          font-size: 1.25rem;
+          font-weight: 700;
+          color: var(--text-primary);
+          margin-bottom: 0.75rem;
+        }
+        .open-desc {
+          font-size: 0.95rem;
+          color: var(--text-secondary);
+          line-height: 1.65;
+          margin-bottom: 1.5rem;
+          max-width: 800px;
+        }
+        .focus-pills {
+          display: flex;
+          flex-wrap: wrap;
+          gap: 0.5rem;
+        }
+      `}</style>
+    </div>
   );
 }

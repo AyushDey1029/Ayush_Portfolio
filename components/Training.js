@@ -1,56 +1,50 @@
 import React from 'react';
-import { BookOpen, CheckCircle, ExternalLink } from 'lucide-react';
-import { Github } from './Icons';
 
 export default function Training({ trainingData = [] }) {
   if (!trainingData || trainingData.length === 0) return null;
 
   return (
-    <section id="training" className="section animate-fade-in">
-      <h2 className="section-title">Specialized Training & Bootcamps</h2>
-      <div style={{ display: 'flex', flexDirection: 'column', gap: '2rem' }}>
+    <div>
+      <div className="section-header">
+        <span className="section-label">Professional Development</span>
+        <h2 className="section-title">Specialized Bootcamps</h2>
+      </div>
+
+      <div className="training-list">
         {trainingData.map((item, idx) => (
-          <div key={idx} className="glass-card training-card">
-            <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start', flexWrap: 'wrap', gap: '1rem', marginBottom: '1rem' }}>
-              <div style={{ display: 'flex', alignItems: 'center', gap: '1rem' }}>
-                <div style={{ padding: '0.8rem', background: 'rgba(88, 166, 255, 0.1)', borderRadius: '12px' }}>
-                  <BookOpen size={28} color="var(--accent-color)" />
-                </div>
-                <div>
-                  <h3 style={{ fontSize: '1.4rem', color: '#fff' }}>{item.Title}</h3>
-                  <p style={{ color: 'var(--text-secondary)', fontSize: '0.95rem' }}>{item.Subtitle}</p>
-                </div>
+          <div key={idx} className="training-card">
+            <div className="training-header">
+              <div>
+                <h3 className="training-title">{item.Title}</h3>
+                <p className="training-subtitle">{item.Subtitle}</p>
               </div>
-              <span style={{ fontSize: '0.9rem', color: 'var(--text-secondary)' }}>{item.Duration}</span>
+              <span className="training-duration">{item.Duration}</span>
             </div>
 
             {item.ParsedDescription?.description && item.ParsedDescription.description.length > 0 && (
-              <ul style={{ paddingLeft: '1.2rem', marginBottom: '1rem', listStyleType: 'disc' }}>
+              <ul className="points-list">
                 {item.ParsedDescription.description.map((point, pIdx) => (
-                  <li key={pIdx} style={{ color: 'var(--text-primary)', marginBottom: '0.4rem' }}>
-                    {point}
+                  <li key={pIdx} className="point-item">
+                    <span className="dash">—</span>
+                    <span>{point}</span>
                   </li>
                 ))}
               </ul>
             )}
 
             {item.ParsedDescription?.learning && item.ParsedDescription.learning.length > 0 && (
-              <div style={{ padding: '1rem', background: 'rgba(255, 255, 255, 0.03)', borderRadius: '8px', borderLeft: '4px solid var(--accent-color)', marginBottom: '1rem' }}>
-                <strong style={{ display: 'block', marginBottom: '0.4rem', color: 'var(--accent-color)', fontSize: '0.95rem' }}>
-                  Core Competencies Mastered:
-                </strong>
-                <ul style={{ paddingLeft: '1.2rem', listStyleType: 'circle', color: 'var(--text-secondary)' }}>
-                  {item.ParsedDescription.learning.map((point, pIdx) => (
-                    <li key={pIdx} style={{ marginBottom: '0.2rem' }}>{point}</li>
-                  ))}
-                </ul>
+              <div className="competencies-block">
+                <span className="comp-label">Competencies Mastered:</span>
+                <span className="comp-text">
+                  {item.ParsedDescription.learning.join(' • ')}
+                </span>
               </div>
             )}
 
             {item.Stack && item.Stack.length > 0 && (
-              <div style={{ display: 'flex', flexWrap: 'wrap', gap: '0.5rem', marginTop: '1rem' }}>
+              <div className="stack-row">
                 {item.Stack.map((tech, tIdx) => (
-                  <span key={tIdx} style={{ fontSize: '0.8rem', padding: '0.25rem 0.65rem', background: 'rgba(88, 166, 255, 0.1)', color: 'var(--accent-color)', borderRadius: '12px' }}>
+                  <span key={tIdx} className="mono-tag">
                     {tech}
                   </span>
                 ))}
@@ -59,6 +53,85 @@ export default function Training({ trainingData = [] }) {
           </div>
         ))}
       </div>
-    </section>
+
+      <style jsx>{`
+        .training-list {
+          display: flex;
+          flex-direction: column;
+          gap: 1.5rem;
+        }
+        .training-card {
+          background: var(--surface-1);
+          border: 1px solid var(--border-subtle);
+          border-radius: 12px;
+          padding: 1.75rem;
+          transition: border-color 0.2s ease;
+        }
+        .training-card:hover {
+          border-color: var(--border-strong);
+        }
+        .training-header {
+          display: flex;
+          justify-content: space-between;
+          align-items: flex-start;
+          flex-wrap: wrap;
+          gap: 0.75rem;
+          margin-bottom: 1.25rem;
+        }
+        .training-title {
+          font-size: 1.25rem;
+          font-weight: 700;
+          color: var(--text-primary);
+        }
+        .training-subtitle {
+          color: var(--text-secondary);
+          font-size: 0.9rem;
+        }
+        .training-duration {
+          font-family: var(--font-mono);
+          font-size: 0.8rem;
+          color: var(--text-muted);
+        }
+        .points-list {
+          display: flex;
+          flex-direction: column;
+          gap: 0.5rem;
+          margin-bottom: 1.25rem;
+        }
+        .point-item {
+          display: flex;
+          align-items: flex-start;
+          gap: 0.6rem;
+          font-size: 0.9rem;
+          color: var(--text-secondary);
+          line-height: 1.6;
+        }
+        .dash {
+          color: var(--text-muted);
+          font-family: var(--font-mono);
+        }
+        .competencies-block {
+          background: rgba(255, 255, 255, 0.02);
+          border-left: 2px solid var(--border-strong);
+          padding: 0.6rem 1rem;
+          border-radius: 0 6px 6px 0;
+          margin-bottom: 1.25rem;
+          font-size: 0.85rem;
+        }
+        .comp-label {
+          font-weight: 600;
+          color: var(--text-primary);
+          margin-right: 0.5rem;
+        }
+        .comp-text {
+          color: var(--text-secondary);
+        }
+        .stack-row {
+          display: flex;
+          flex-wrap: wrap;
+          gap: 0.45rem;
+        }
+      `}</style>
+    </div>
   );
 }

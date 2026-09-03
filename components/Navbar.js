@@ -1,6 +1,6 @@
 'use client';
 import React, { useState } from 'react';
-import { Sparkles, Menu, X } from 'lucide-react';
+import { Bot, Menu, X } from 'lucide-react';
 
 export default function Navbar({ onOpenChat }) {
   const [isOpen, setIsOpen] = useState(false);
@@ -10,49 +10,52 @@ export default function Navbar({ onOpenChat }) {
     { name: 'Skills', href: '#skills' },
     { name: 'Projects', href: '#projects' },
     { name: 'Training', href: '#training' },
-    { name: 'Certificates', href: '#certifications' },
+    { name: 'Certifications', href: '#certifications' },
     { name: 'Education', href: '#education' },
   ];
 
   return (
-    <nav className="navbar-container">
-      <div className="navbar-inner">
-        <a href="#" className="navbar-logo gradient-text">
-          Ayush.dev
+    <header className="nav-header">
+      <div className="nav-container">
+        <a href="#" className="brand">
+          <span className="brand-name">Ayush Dey</span>
+          <span className="brand-role">Software Engineer</span>
         </a>
 
-        {/* Desktop Navigation */}
-        <div className="navbar-links">
-          {navLinks.map((link) => (
-            <a key={link.name} href={link.href} className="nav-item">
-              {link.name}
-            </a>
-          ))}
-          <button onClick={onOpenChat} className="ai-chat-btn">
-            <Sparkles size={16} />
-            <span>Ask AI</span>
-          </button>
-        </div>
+        {/* Desktop Links */}
+        <nav className="desktop-nav">
+          <div className="nav-links">
+            {navLinks.map((link) => (
+              <a key={link.name} href={link.href} className="nav-anchor">
+                {link.name}
+              </a>
+            ))}
+          </div>
 
-        {/* Mobile Menu Button */}
-        <div className="mobile-toggle">
-          <button onClick={onOpenChat} className="ai-chat-btn mobile-ai-btn">
-            <Sparkles size={16} />
+          <button onClick={onOpenChat} className="copilot-btn" aria-label="Open AI Copilot">
+            <Bot size={15} />
+            <span>AI Copilot</span>
+          </button>
+        </nav>
+
+        {/* Mobile controls */}
+        <div className="mobile-actions">
+          <button onClick={onOpenChat} className="copilot-btn-icon" aria-label="Open AI Copilot">
+            <Bot size={16} />
           </button>
           <button onClick={() => setIsOpen(!isOpen)} className="menu-btn" aria-label="Toggle menu">
-            {isOpen ? <X size={24} /> : <Menu size={24} />}
+            {isOpen ? <X size={20} /> : <Menu size={20} />}
           </button>
         </div>
       </div>
 
-      {/* Mobile dropdown */}
       {isOpen && (
-        <div className="mobile-menu">
+        <div className="mobile-drawer">
           {navLinks.map((link) => (
             <a
               key={link.name}
               href={link.href}
-              className="mobile-nav-item"
+              className="mobile-link"
               onClick={() => setIsOpen(false)}
             >
               {link.name}
@@ -62,96 +65,120 @@ export default function Navbar({ onOpenChat }) {
       )}
 
       <style jsx>{`
-        .navbar-container {
+        .nav-header {
           position: sticky;
           top: 0;
           z-index: 100;
-          background: rgba(13, 17, 23, 0.85);
-          backdrop-filter: blur(16px);
-          -webkit-backdrop-filter: blur(16px);
-          border-bottom: 1px solid var(--border-color);
-          margin-bottom: 2rem;
-          padding: 0.75rem 1.5rem;
+          background: rgba(9, 10, 13, 0.88);
+          backdrop-filter: blur(12px);
+          -webkit-backdrop-filter: blur(12px);
+          border-bottom: 1px solid var(--border-subtle);
         }
-        .navbar-inner {
-          max-width: 1200px;
+        .nav-container {
+          max-width: 1080px;
           margin: 0 auto;
+          padding: 0.9rem 1.75rem;
           display: flex;
           justify-content: space-between;
           align-items: center;
         }
-        .navbar-logo {
-          font-size: 1.5rem;
-          font-weight: 800;
-          letter-spacing: -0.5px;
+        .brand {
+          display: flex;
+          align-items: baseline;
+          gap: 0.6rem;
         }
-        .navbar-links {
+        .brand-name {
+          font-weight: 700;
+          font-size: 1.05rem;
+          color: #fff;
+          letter-spacing: -0.01em;
+        }
+        .brand-role {
+          font-family: var(--font-mono);
+          font-size: 0.75rem;
+          color: var(--text-muted);
+        }
+        .desktop-nav {
           display: flex;
           align-items: center;
+          gap: 1.75rem;
+        }
+        .nav-links {
+          display: flex;
           gap: 1.5rem;
         }
-        .nav-item {
+        .nav-anchor {
           color: var(--text-secondary);
-          font-size: 0.95rem;
-          font-weight: 500;
-          transition: color 0.2s;
+          font-size: 0.88rem;
+          font-weight: 450;
+          transition: color 0.15s ease;
         }
-        .nav-item:hover {
-          color: var(--accent-color);
+        .nav-anchor:hover {
+          color: #fff;
         }
-        .ai-chat-btn {
+        .copilot-btn {
           display: flex;
           align-items: center;
-          gap: 0.5rem;
-          background: linear-gradient(135deg, #2563eb, #7c3aed);
-          color: #fff;
-          border: none;
-          padding: 0.5rem 1rem;
-          border-radius: 9999px;
-          font-weight: 600;
-          font-size: 0.9rem;
+          gap: 0.45rem;
+          background: var(--surface-1);
+          border: 1px solid var(--border-strong);
+          color: var(--text-primary);
+          padding: 0.4rem 0.85rem;
+          border-radius: 8px;
+          font-size: 0.82rem;
+          font-weight: 500;
           cursor: pointer;
-          transition: transform 0.2s, box-shadow 0.2s;
+          transition: all 0.15s ease;
         }
-        .ai-chat-btn:hover {
-          transform: translateY(-2px);
-          box-shadow: 0 4px 20px rgba(124, 58, 237, 0.4);
+        .copilot-btn:hover {
+          background: var(--surface-2);
+          border-color: var(--border-active);
+          color: #fff;
         }
-        .mobile-toggle {
+        .mobile-actions {
           display: none;
+        }
+        .copilot-btn-icon {
+          background: var(--surface-1);
+          border: 1px solid var(--border-strong);
+          color: var(--text-primary);
+          padding: 0.45rem;
+          border-radius: 8px;
+          display: flex;
+          align-items: center;
+          cursor: pointer;
         }
         .menu-btn {
           background: none;
           border: none;
           color: var(--text-primary);
-          cursor: pointer;
           display: flex;
           align-items: center;
+          cursor: pointer;
         }
-        .mobile-menu {
+        .mobile-drawer {
           display: flex;
           flex-direction: column;
-          gap: 1rem;
-          padding: 1.5rem 0;
-          border-top: 1px solid var(--border-color);
-          margin-top: 0.75rem;
+          padding: 1rem 1.75rem 1.5rem;
+          border-top: 1px solid var(--border-subtle);
+          background: var(--bg-color);
+          gap: 0.85rem;
         }
-        .mobile-nav-item {
-          color: var(--text-primary);
-          font-size: 1.1rem;
-          padding: 0.5rem 0;
+        .mobile-link {
+          color: var(--text-secondary);
+          font-size: 0.95rem;
         }
         @media (max-width: 768px) {
-          .navbar-links {
+          .desktop-nav {
             display: none;
           }
-          .mobile-toggle {
+          .mobile-actions {
             display: flex;
             align-items: center;
             gap: 0.75rem;
           }
         }
       `}</style>
-    </nav>
+    </header>
   );
 }

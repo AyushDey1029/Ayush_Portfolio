@@ -1,12 +1,12 @@
 'use client';
 import React, { useState, useRef, useEffect } from 'react';
-import { Sparkles, MessageSquare, X, Send, Bot, User, CornerDownLeft } from 'lucide-react';
+import { Bot, User, X, Send, CornerDownLeft } from 'lucide-react';
 
 export default function Chatbot({ isOpen, setIsOpen }) {
   const [messages, setMessages] = useState([
     {
       role: 'assistant',
-      content: "Hi! I'm Ayush's AI Assistant. I can answer questions about his projects, technical stack, bootcamp training, and background directly from his portfolio data. What would you like to know?",
+      content: "Hello! I am Ayush's Portfolio Assistant, grounded directly in his verified resume data. Feel free to ask about his engineering projects, technical stack, or background.",
     },
   ]);
   const [input, setInput] = useState('');
@@ -14,10 +14,10 @@ export default function Chatbot({ isOpen, setIsOpen }) {
   const messagesEndRef = useRef(null);
 
   const quickPrompts = [
-    'Tell me about your projects',
-    'What are your core skills?',
-    'Tell me about FundConnectAI',
-    'How can I contact Ayush?',
+    'Core technical skills',
+    'Explain FundConnectAI',
+    'IoT AutoEncoder project',
+    'Contact information',
   ];
 
   const scrollToBottom = () => {
@@ -50,14 +50,14 @@ export default function Chatbot({ isOpen, setIsOpen }) {
       if (data.reply) {
         setMessages((prev) => [
           ...prev,
-          { role: 'assistant', content: data.reply, source: data.source },
+          { role: 'assistant', content: data.reply },
         ]);
       } else {
         setMessages((prev) => [
           ...prev,
           {
             role: 'assistant',
-            content: "Sorry, I couldn't process that request right now. Please try again or reach out to Ayush directly!",
+            content: "I could not retrieve an answer right now. Please reach out to Ayush directly at deyayush1029@gmail.com.",
           },
         ]);
       }
@@ -77,94 +77,72 @@ export default function Chatbot({ isOpen, setIsOpen }) {
 
   return (
     <>
-      {/* Floating Action Button */}
+      {/* Discrete, Professional Toggle Button */}
       <button
         onClick={() => setIsOpen(!isOpen)}
-        className="chat-toggle-btn"
-        aria-label="Open AI Assistant"
+        className="assistant-pill"
+        aria-label="Toggle Portfolio Assistant"
       >
-        <Sparkles size={22} className="sparkle-icon" />
-        <span className="chat-btn-text">Ask AI Assistant</span>
-        <span className="online-indicator" />
+        <Bot size={16} />
+        <span>Ask Resume Assistant</span>
+        <span className="live-dot" />
       </button>
 
-      {/* Floating Chat Drawer / Window */}
+      {/* Clean Drawer */}
       {isOpen && (
-        <div className="chat-window animate-fade-in">
+        <div className="assistant-modal">
           {/* Header */}
-          <div className="chat-header">
-            <div className="chat-header-info">
-              <div className="bot-avatar">
-                <Bot size={20} color="#fff" />
-              </div>
-              <div>
-                <h3 className="chat-title">Ayush's Portfolio AI</h3>
-                <p className="chat-subtitle">Powered by Gemini & Excel RAG</p>
-              </div>
+          <div className="assistant-header">
+            <div className="header-info">
+              <span className="header-title">Ayush's Assistant</span>
+              <span className="header-badge">RAG • Gemini</span>
             </div>
             <button
               onClick={() => setIsOpen(false)}
-              className="chat-close-btn"
-              aria-label="Close Chat"
+              className="close-btn"
+              aria-label="Close Assistant"
             >
-              <X size={20} />
+              <X size={18} />
             </button>
           </div>
 
-          {/* Messages Body */}
-          <div className="chat-messages">
+          {/* Messages */}
+          <div className="messages-area">
             {messages.map((msg, idx) => (
               <div
                 key={idx}
-                className={`message-row ${msg.role === 'user' ? 'user-row' : 'bot-row'}`}
+                className={`msg-group ${msg.role === 'user' ? 'user-msg' : 'bot-msg'}`}
               >
-                {msg.role === 'assistant' && (
-                  <div className="message-avatar bot-bubble-avatar">
-                    <Bot size={16} />
-                  </div>
-                )}
-                <div
-                  className={`message-bubble ${
-                    msg.role === 'user' ? 'user-bubble' : 'bot-bubble'
-                  }`}
-                >
+                <div className="msg-sender">
+                  {msg.role === 'user' ? 'You' : 'Assistant'}
+                </div>
+                <div className="msg-content">
                   <div style={{ whiteSpace: 'pre-line' }}>{msg.content}</div>
                 </div>
-                {msg.role === 'user' && (
-                  <div className="message-avatar user-bubble-avatar">
-                    <User size={16} />
-                  </div>
-                )}
               </div>
             ))}
 
             {loading && (
-              <div className="message-row bot-row">
-                <div className="message-avatar bot-bubble-avatar">
-                  <Bot size={16} />
-                </div>
-                <div className="message-bubble bot-bubble typing-bubble">
-                  <div className="dot-pulse">
-                    <span />
-                    <span />
-                    <span />
-                  </div>
+              <div className="msg-group bot-msg">
+                <div className="msg-sender">Assistant</div>
+                <div className="msg-content loading-dots">
+                  <span>Searching resume context...</span>
                 </div>
               </div>
             )}
             <div ref={messagesEndRef} />
           </div>
 
-          {/* Quick Prompts */}
+          {/* Quick Questions */}
           {messages.length < 3 && (
-            <div className="quick-prompts-container">
-              {quickPrompts.map((prompt, idx) => (
+            <div className="prompts-bar">
+              {quickPrompts.map((p, idx) => (
                 <button
                   key={idx}
-                  onClick={() => handleSend(prompt)}
-                  className="quick-prompt-pill"
+                  onClick={() => handleSend(p)}
+                  className="prompt-btn"
                 >
-                  {prompt}
+                  {p}
                 </button>
               ))}
             </div>
@@ -176,260 +154,222 @@ export default function Chatbot({ isOpen, setIsOpen }) {
               e.preventDefault();
               handleSend();
             }}
-            className="chat-input-form"
+            className="input-row"
           >
             <input
               type="text"
-              placeholder="Ask anything about Ayush..."
+              placeholder="Ask a question about Ayush's background..."
               value={input}
               onChange={(e) => setInput(e.target.value)}
-              className="chat-input"
+              className="chat-field"
             />
             <button
               type="submit"
               disabled={loading || !input.trim()}
-              className="chat-send-btn"
-              aria-label="Send message"
+              className="send-button"
+              aria-label="Submit"
             >
-              <Send size={18} />
+              <CornerDownLeft size={16} />
             </button>
           </form>
         </div>
       )}
 
       <style jsx>{`
-        .chat-toggle-btn {
+        .assistant-pill {
           position: fixed;
-          bottom: 2rem;
-          right: 2rem;
+          bottom: 1.75rem;
+          right: 1.75rem;
           z-index: 999;
           display: flex;
           align-items: center;
-          gap: 0.6rem;
-          background: linear-gradient(135deg, #1d4ed8, #7c3aed);
-          color: #fff;
-          border: none;
-          padding: 0.85rem 1.4rem;
+          gap: 0.55rem;
+          background: #11141a;
+          border: 1px solid var(--border-strong);
+          color: var(--text-primary);
+          padding: 0.6rem 1.1rem;
           border-radius: 9999px;
-          font-weight: 600;
-          font-size: 0.95rem;
+          font-size: 0.85rem;
+          font-weight: 500;
           cursor: pointer;
-          box-shadow: 0 10px 25px rgba(29, 78, 216, 0.4), 0 0 15px rgba(124, 58, 237, 0.3);
-          transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+          box-shadow: 0 8px 24px rgba(0, 0, 0, 0.5);
+          transition: all 0.2s ease;
         }
-        .chat-toggle-btn:hover {
-          transform: translateY(-3px) scale(1.02);
-          box-shadow: 0 14px 30px rgba(29, 78, 216, 0.6), 0 0 20px rgba(124, 58, 237, 0.5);
+        .assistant-pill:hover {
+          border-color: var(--border-active);
+          background: #161b22;
+          transform: translateY(-2px);
         }
-        .sparkle-icon {
-          animation: spin-pulse 3s infinite linear;
-        }
-        @keyframes spin-pulse {
-          0% { transform: rotate(0deg) scale(1); }
-          50% { transform: rotate(180deg) scale(1.15); }
-          100% { transform: rotate(360deg) scale(1); }
-        }
-        .online-indicator {
-          width: 8px;
-          height: 8px;
-          background: #34d399;
+        .live-dot {
+          width: 6px;
+          height: 6px;
           border-radius: 50%;
-          box-shadow: 0 0 8px #34d399;
+          background: #10b981;
         }
-        .chat-window {
+        .assistant-modal {
           position: fixed;
-          bottom: 5.5rem;
-          right: 2rem;
-          width: 400px;
-          max-width: calc(100vw - 4rem);
-          height: 560px;
-          max-height: calc(100vh - 8rem);
-          background: rgba(18, 24, 34, 0.95);
-          backdrop-filter: blur(20px);
-          -webkit-backdrop-filter: blur(20px);
-          border: 1px solid var(--border-color);
-          border-radius: 20px;
+          bottom: 4.75rem;
+          right: 1.75rem;
+          width: 390px;
+          max-width: calc(100vw - 3.5rem);
+          height: 520px;
+          max-height: calc(100vh - 7rem);
+          background: #0d1117;
+          border: 1px solid var(--border-strong);
+          border-radius: 12px;
           z-index: 1000;
           display: flex;
           flex-direction: column;
-          box-shadow: 0 20px 50px rgba(0, 0, 0, 0.6), 0 0 30px rgba(37, 99, 235, 0.2);
+          box-shadow: 0 20px 45px rgba(0, 0, 0, 0.7);
           overflow: hidden;
         }
-        .chat-header {
+        .assistant-header {
           display: flex;
           justify-content: space-between;
           align-items: center;
-          padding: 1rem 1.25rem;
-          background: rgba(22, 27, 34, 0.8);
-          border-bottom: 1px solid var(--border-color);
+          padding: 0.9rem 1.1rem;
+          border-bottom: 1px solid var(--border-subtle);
+          background: #11141a;
         }
-        .chat-header-info {
+        .header-info {
           display: flex;
           align-items: center;
-          gap: 0.75rem;
+          gap: 0.6rem;
         }
-        .bot-avatar {
-          width: 36px;
-          height: 36px;
-          border-radius: 50%;
-          background: linear-gradient(135deg, #2563eb, #7c3aed);
-          display: flex;
-          align-items: center;
-          justify-content: center;
+        .header-title {
+          font-size: 0.92rem;
+          font-weight: 600;
+          color: var(--text-primary);
         }
-        .chat-title {
-          font-size: 1rem;
-          font-weight: 700;
-          color: #fff;
+        .header-badge {
+          font-family: var(--font-mono);
+          font-size: 0.68rem;
+          padding: 0.15rem 0.45rem;
+          background: rgba(37, 99, 235, 0.12);
+          border: 1px solid rgba(37, 99, 235, 0.3);
+          border-radius: 4px;
+          color: #60a5fa;
         }
-        .chat-subtitle {
-          font-size: 0.75rem;
-          color: #34d399;
-        }
-        .chat-close-btn {
+        .close-btn {
           background: none;
           border: none;
-          color: var(--text-secondary);
+          color: var(--text-muted);
           cursor: pointer;
-          transition: color 0.2s;
+          display: flex;
+          align-items: center;
         }
-        .chat-close-btn:hover {
-          color: #fff;
+        .close-btn:hover {
+          color: var(--text-primary);
         }
-        .chat-messages {
+        .messages-area {
           flex: 1;
-          padding: 1rem;
+          padding: 1.1rem;
           overflow-y: auto;
           display: flex;
           flex-direction: column;
-          gap: 1rem;
+          gap: 1.1rem;
         }
-        .message-row {
+        .msg-group {
           display: flex;
-          align-items: flex-start;
-          gap: 0.6rem;
+          flex-direction: column;
+          gap: 0.25rem;
         }
-        .user-row {
-          justify-content: flex-end;
+        .msg-sender {
+          font-family: var(--font-mono);
+          font-size: 0.7rem;
+          color: var(--text-muted);
+          text-transform: uppercase;
         }
-        .bot-row {
-          justify-content: flex-start;
+        .user-msg .msg-sender {
+          text-align: right;
+          color: var(--accent-text);
         }
-        .message-avatar {
-          width: 28px;
-          height: 28px;
-          border-radius: 50%;
-          display: flex;
-          align-items: center;
-          justify-content: center;
-          flex-shrink: 0;
+        .msg-content {
+          padding: 0.75rem 0.95rem;
+          border-radius: 8px;
+          font-size: 0.88rem;
+          line-height: 1.55;
         }
-        .bot-bubble-avatar {
-          background: rgba(88, 166, 255, 0.15);
-          color: var(--accent-color);
-        }
-        .user-bubble-avatar {
-          background: rgba(124, 58, 237, 0.2);
-          color: #a78bfa;
-        }
-        .message-bubble {
-          max-width: 80%;
-          padding: 0.75rem 1rem;
-          border-radius: 14px;
-          font-size: 0.9rem;
-          line-height: 1.5;
-        }
-        .bot-bubble {
-          background: rgba(255, 255, 255, 0.05);
-          border: 1px solid var(--border-color);
+        .bot-msg .msg-content {
+          background: #161b22;
+          border: 1px solid var(--border-subtle);
           color: var(--text-primary);
-          border-top-left-radius: 4px;
         }
-        .user-bubble {
-          background: linear-gradient(135deg, #2563eb, #1d4ed8);
+        .user-msg .msg-content {
+          background: #1e293b;
+          border: 1px solid var(--border-strong);
           color: #fff;
-          border-top-right-radius: 4px;
+          align-self: flex-end;
+          max-width: 85%;
         }
-        .quick-prompts-container {
+        .loading-dots {
+          color: var(--text-muted);
+          font-size: 0.8rem;
+          font-style: italic;
+        }
+        .prompts-bar {
           display: flex;
           flex-wrap: wrap;
-          gap: 0.4rem;
-          padding: 0.5rem 1rem;
+          gap: 0.35rem;
+          padding: 0.5rem 1.1rem;
+          border-top: 1px solid var(--border-subtle);
         }
-        .quick-prompt-pill {
-          background: rgba(88, 166, 255, 0.1);
-          border: 1px solid rgba(88, 166, 255, 0.2);
-          color: var(--accent-color);
-          padding: 0.35rem 0.75rem;
-          border-radius: 9999px;
+        .prompt-btn {
           font-size: 0.75rem;
+          padding: 0.25rem 0.6rem;
+          background: var(--surface-1);
+          border: 1px solid var(--border-subtle);
+          border-radius: 4px;
+          color: var(--text-secondary);
           cursor: pointer;
-          transition: all 0.2s;
+          transition: all 0.15s ease;
         }
-        .quick-prompt-pill:hover {
-          background: rgba(88, 166, 255, 0.2);
-          border-color: var(--accent-color);
+        .prompt-btn:hover {
           color: #fff;
+          border-color: var(--border-strong);
         }
-        .chat-input-form {
+        .input-row {
           display: flex;
           align-items: center;
+          padding: 0.75rem 1.1rem;
+          border-top: 1px solid var(--border-subtle);
+          background: #11141a;
           gap: 0.5rem;
-          padding: 0.75rem 1rem;
-          background: rgba(22, 27, 34, 0.9);
-          border-top: 1px solid var(--border-color);
         }
-        .chat-input {
+        .chat-field {
           flex: 1;
-          background: rgba(255, 255, 255, 0.05);
-          border: 1px solid var(--border-color);
-          padding: 0.65rem 1rem;
-          border-radius: 9999px;
+          background: #0d1117;
+          border: 1px solid var(--border-subtle);
+          border-radius: 6px;
+          padding: 0.55rem 0.85rem;
           color: #fff;
-          font-size: 0.9rem;
+          font-size: 0.85rem;
           outline: none;
-          transition: border-color 0.2s;
+          transition: border-color 0.15s ease;
         }
-        .chat-input:focus {
-          border-color: var(--accent-color);
+        .chat-field:focus {
+          border-color: var(--border-strong);
         }
-        .chat-send-btn {
-          background: var(--accent-color);
-          color: #fff;
-          border: none;
-          width: 36px;
-          height: 36px;
-          border-radius: 50%;
+        .send-button {
+          background: var(--surface-2);
+          border: 1px solid var(--border-subtle);
+          border-radius: 6px;
+          color: var(--text-primary);
+          width: 32px;
+          height: 32px;
           display: flex;
           align-items: center;
           justify-content: center;
           cursor: pointer;
-          transition: transform 0.2s, opacity 0.2s;
+          transition: all 0.15s ease;
         }
-        .chat-send-btn:disabled {
-          opacity: 0.5;
+        .send-button:hover:not(:disabled) {
+          background: var(--surface-elevated);
+          border-color: var(--border-strong);
+        }
+        .send-button:disabled {
+          opacity: 0.4;
           cursor: not-allowed;
-        }
-        .chat-send-btn:not(:disabled):hover {
-          transform: scale(1.08);
-        }
-        .dot-pulse {
-          display: flex;
-          gap: 4px;
-          padding: 4px;
-        }
-        .dot-pulse span {
-          width: 6px;
-          height: 6px;
-          background: var(--text-secondary);
-          border-radius: 50%;
-          animation: pulse 1.2s infinite ease-in-out;
-        }
-        .dot-pulse span:nth-child(2) { animation-delay: 0.2s; }
-        .dot-pulse span:nth-child(3) { animation-delay: 0.4s; }
-        @keyframes pulse {
-          0%, 100% { opacity: 0.3; transform: scale(0.8); }
-          50% { opacity: 1; transform: scale(1.2); }
         }
       `}</style>
     </>

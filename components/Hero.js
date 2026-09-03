@@ -1,74 +1,205 @@
-import { Mail, Phone, GraduationCap, Book, Star, Calendar } from 'lucide-react';
+import React from 'react';
+import { Mail, Phone, ExternalLink, ArrowUpRight } from 'lucide-react';
 import { Github, Linkedin } from './Icons';
-
-const iconMap = {
-  'mail': Mail,
-  'linkedin': Linkedin,
-  'github': Github,
-  'phone': Phone,
-  'graduation-cap': GraduationCap,
-  'book': Book,
-  'star': Star,
-  'calendar': Calendar,
-};
 
 export default function Hero({ aboutData = [] }) {
   const introTexts = aboutData.filter(item => item.Category === 'Narrative').map(i => i.Value);
   const contacts = aboutData.filter(item => item.Category === 'Contact');
   const systemInfo = aboutData.filter(item => item.Category === 'SystemInfo');
 
+  const gpa = systemInfo.find(s => s.Key === 'gpa')?.Value || '8.4';
+  const university = systemInfo.find(s => s.Key === 'university')?.Value || 'Lovely Professional University';
+  const degree = systemInfo.find(s => s.Key === 'degree')?.Value || 'B.Tech - Computer Science and Engineering';
+
+  const email = contacts.find(c => c.Key === 'email')?.Value || 'deyayush1029@gmail.com';
+  const github = contacts.find(c => c.Key === 'github')?.Value || 'github.com/AyushDey1029';
+  const linkedin = contacts.find(c => c.Key === 'linkedin')?.Value || 'linkedin.com/in/ayush--dey';
+  const phone = contacts.find(c => c.Key === 'phone')?.Value || '+91-6268106030';
+
   return (
-    <section className="section hero-section animate-fade-in delay-100">
-      <div className="glass-card" style={{ textAlign: 'center', position: 'relative', overflow: 'hidden' }}>
-        <h1 className="section-title gradient-text" style={{ marginBottom: '1rem', fontSize: '3.5rem' }}>
-          Ayush Dey
-        </h1>
-        
-        <div style={{ display: 'flex', justifyContent: 'center', gap: '1.5rem', marginBottom: '2rem', flexWrap: 'wrap' }}>
-          {contacts.map((contact, idx) => {
-            const IconComponent = iconMap[contact.Icon];
-            return (
-              <a 
-                key={idx} 
-                href={contact.Href} 
-                target="_blank" 
-                rel="noopener noreferrer"
-                style={{ display: 'flex', alignItems: 'center', gap: '0.5rem', padding: '0.5rem 1rem', background: 'rgba(255,255,255,0.05)', borderRadius: '20px', transition: 'all 0.3s' }}
-                className="contact-pill"
-              >
-                {IconComponent && <IconComponent size={18} />}
-                <span>{contact.Value.replace('linkedin.com/in/', '').replace('github.com/', '')}</span>
-              </a>
-            );
-          })}
-        </div>
+    <section className="hero-wrap">
+      {/* Status indicator */}
+      <div className="status-container">
+        <span className="status-pill">
+          <span className="status-dot" />
+          Available for SWE & AI Opportunities
+        </span>
+      </div>
 
-        <div style={{ maxWidth: '800px', margin: '0 auto 3rem auto', fontSize: '1.1rem', color: 'var(--text-primary)' }}>
-          {introTexts.map((text, idx) => (
-            <p key={idx} style={{ marginBottom: '1rem' }}>{text}</p>
-          ))}
-        </div>
+      {/* Main Title */}
+      <div className="hero-main">
+        <h1 className="hero-name">Ayush Dey</h1>
+        <p className="hero-title">
+          Full-Stack Software Engineer & Machine Learning Developer
+        </p>
+      </div>
 
-        <div style={{ display: 'flex', justifyContent: 'space-around', flexWrap: 'wrap', gap: '1rem', padding: '1.5rem', background: 'rgba(0,0,0,0.2)', borderRadius: '12px' }}>
-          {systemInfo.map((info, idx) => {
-            const IconComponent = iconMap[info.Icon];
-            return (
-              <div key={idx} style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', gap: '0.5rem' }}>
-                {IconComponent && <IconComponent size={24} color="var(--accent-color)" />}
-                <span style={{ fontSize: '0.9rem', color: 'var(--text-secondary)', textTransform: 'uppercase', letterSpacing: '1px' }}>
-                  {info.Key}
-                </span>
-                <span style={{ fontWeight: '600' }}>{info.Value}</span>
-              </div>
-            );
-          })}
+      {/* Narrative Bio */}
+      <div className="hero-bio">
+        {introTexts.length > 0 ? (
+          introTexts.map((text, idx) => (
+            <p key={idx} className="bio-paragraph">{text}</p>
+          ))
+        ) : (
+          <p className="bio-paragraph">
+            Computer Science undergraduate with rigorous focus on building scalable full-stack applications, deep learning autoencoder architectures in PyTorch, and production-grade LLM integrations.
+          </p>
+        )}
+      </div>
+
+      {/* Academic Highlights */}
+      <div className="academic-strip">
+        <div className="academic-item">
+          <span className="academic-label">Institution</span>
+          <span className="academic-value">{university}</span>
+        </div>
+        <div className="academic-divider" />
+        <div className="academic-item">
+          <span className="academic-label">Program</span>
+          <span className="academic-value">{degree}</span>
+        </div>
+        <div className="academic-divider" />
+        <div className="academic-item">
+          <span className="academic-label">Academic Standing</span>
+          <span className="academic-value highlight-val">CGPA: {gpa}</span>
         </div>
       </div>
-      <style>{`
-        .contact-pill:hover {
-          background: rgba(88, 166, 255, 0.15) !important;
-          transform: translateY(-2px);
-          box-shadow: 0 4px 12px rgba(88, 166, 255, 0.2);
+
+      {/* Contact Links */}
+      <div className="contact-row">
+        <a href={`mailto:${email}`} className="action-link primary-action">
+          <Mail size={16} />
+          <span>Email Me</span>
+        </a>
+        <a href={`https://${github}`} target="_blank" rel="noopener noreferrer" className="action-link">
+          <Github size={16} />
+          <span>GitHub</span>
+          <ArrowUpRight size={14} className="arrow-icon" />
+        </a>
+        <a href={`https://${linkedin}`} target="_blank" rel="noopener noreferrer" className="action-link">
+          <Linkedin size={16} />
+          <span>LinkedIn</span>
+          <ArrowUpRight size={14} className="arrow-icon" />
+        </a>
+        <a href={`tel:${phone}`} className="action-link">
+          <Phone size={16} />
+          <span>{phone}</span>
+        </a>
+      </div>
+
+      <style jsx>{`
+        .hero-wrap {
+          padding: 4.5rem 0 3.5rem;
+          border-bottom: 1px solid var(--border-subtle);
+        }
+        .status-container {
+          margin-bottom: 1.5rem;
+        }
+        .hero-name {
+          font-size: 3.25rem;
+          font-weight: 800;
+          color: #fff;
+          letter-spacing: -0.03em;
+          line-height: 1.1;
+          margin-bottom: 0.75rem;
+        }
+        .hero-title {
+          font-size: 1.25rem;
+          color: var(--text-secondary);
+          font-weight: 450;
+          line-height: 1.5;
+          margin-bottom: 1.5rem;
+        }
+        .hero-bio {
+          max-width: 720px;
+          margin-bottom: 2rem;
+        }
+        .bio-paragraph {
+          font-size: 1.02rem;
+          color: var(--text-secondary);
+          margin-bottom: 0.75rem;
+          line-height: 1.7;
+        }
+        .academic-strip {
+          display: flex;
+          align-items: center;
+          gap: 1.5rem;
+          flex-wrap: wrap;
+          padding: 1rem 1.25rem;
+          background: var(--surface-1);
+          border: 1px solid var(--border-subtle);
+          border-radius: 10px;
+          margin-bottom: 2rem;
+        }
+        .academic-item {
+          display: flex;
+          flex-direction: column;
+          gap: 0.15rem;
+        }
+        .academic-label {
+          font-family: var(--font-mono);
+          font-size: 0.7rem;
+          text-transform: uppercase;
+          letter-spacing: 0.08em;
+          color: var(--text-muted);
+        }
+        .academic-value {
+          font-size: 0.9rem;
+          font-weight: 550;
+          color: var(--text-primary);
+        }
+        .highlight-val {
+          color: #34d399;
+          font-family: var(--font-mono);
+        }
+        .academic-divider {
+          width: 1px;
+          height: 28px;
+          background: var(--border-subtle);
+        }
+        .contact-row {
+          display: flex;
+          align-items: center;
+          flex-wrap: wrap;
+          gap: 0.75rem;
+        }
+        .action-link {
+          display: inline-flex;
+          align-items: center;
+          gap: 0.45rem;
+          padding: 0.5rem 0.95rem;
+          background: var(--surface-1);
+          border: 1px solid var(--border-subtle);
+          border-radius: 8px;
+          color: var(--text-secondary);
+          font-size: 0.85rem;
+          font-weight: 500;
+          transition: all 0.15s ease;
+        }
+        .action-link:hover {
+          border-color: var(--border-active);
+          color: #fff;
+          background: var(--surface-2);
+        }
+        .primary-action {
+          background: var(--accent);
+          color: #fff;
+          border-color: var(--accent);
+        }
+        .primary-action:hover {
+          background: #1d4ed8;
+          border-color: #1d4ed8;
+        }
+        .arrow-icon {
+          color: var(--text-muted);
+        }
+        @media (max-width: 768px) {
+          .hero-name {
+            font-size: 2.5rem;
+          }
+          .academic-divider {
+            display: none;
+          }
         }
       `}</style>
     </section>
