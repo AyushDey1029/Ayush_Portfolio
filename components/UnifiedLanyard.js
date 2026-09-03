@@ -236,11 +236,12 @@ function LanyardBand({
 
   const [dragged, drag] = useState(false);
   const [hovered, hover] = useState(false);
+  const jointY = isMobile ? 1.58 : 5.42;
 
   useRopeJoint(fixed, j1, [[0, 0, 0], [0, 0, 0], 0.85]);
   useRopeJoint(j1, j2, [[0, 0, 0], [0, 0, 0], 1.95]);
   useRopeJoint(j2, j3, [[0, 0, 0], [0, 0, 0], 1.95]);
-  useSphericalJoint(j3, card, [[0, 0, 0], [0, 5.42, 0]]);
+  useSphericalJoint(j3, card, [[0, 0, 0], [0, jointY, 0]]);
 
   useEffect(() => {
     if (hovered) {
