@@ -203,7 +203,7 @@ function LanyardBand({
   useRopeJoint(fixed, j1, [[0, 0, 0], [0, 0, 0], 0.85]);
   useRopeJoint(j1, j2, [[0, 0, 0], [0, 0, 0], 1.95]);
   useRopeJoint(j2, j3, [[0, 0, 0], [0, 0, 0], 1.95]);
-  useSphericalJoint(j3, card, [[0, 0, 0], [0, 5.2, 0]]);
+  useSphericalJoint(j3, card, [[0, 0, 0], [0, 5.42, 0]]);
 
   useEffect(() => {
     if (hovered) {
@@ -388,12 +388,14 @@ function LanyardBand({
                 />
               </mesh>
             )}
-            {nodes?.clip && (
-              <mesh geometry={nodes.clip.geometry} material={materials.metal} material-roughness={0.2} />
-            )}
-            {nodes?.clamp && (
-              <mesh geometry={nodes.clamp.geometry} material={materials.metal} />
-            )}
+            <group position={[0, 0.042, 0]}>
+              {nodes?.clip && (
+                <mesh geometry={nodes.clip.geometry} material={materials.metal} material-roughness={0.2} />
+              )}
+              {nodes?.clamp && (
+                <mesh geometry={nodes.clamp.geometry} material={materials.metal} />
+              )}
+            </group>
           </group>
         </RigidBody>
       </group>
