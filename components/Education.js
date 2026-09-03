@@ -1,4 +1,5 @@
 import React from 'react';
+import BorderGlow from './BorderGlow';
 
 export default function Education({ educationData = [] }) {
   if (!educationData || educationData.length === 0) return null;
@@ -12,50 +13,62 @@ export default function Education({ educationData = [] }) {
 
       <div className="education-list">
         {educationData.map((edu, idx) => (
-          <div key={idx} className="edu-card">
-            <div className="edu-top">
-              <div>
-                <h3 className="edu-degree">{edu.Degree}</h3>
-                <p className="edu-major">
-                  {edu.Major} {edu.Specialization ? `• ${edu.Specialization}` : ''}
-                </p>
-                <p className="edu-inst">{edu.Institution}</p>
+          <BorderGlow
+            key={idx}
+            borderRadius={12}
+            backgroundColor="#11141a"
+            glowColor="215 80 60"
+            colors={['#38bdf8', '#818cf8', '#c084fc']}
+            edgeSensitivity={30}
+            glowRadius={32}
+            glowIntensity={0.85}
+            coneSpread={25}
+          >
+            <div className="edu-card-content">
+              <div className="edu-top">
+                <div>
+                  <h3 className="edu-degree">{edu.Degree}</h3>
+                  <p className="edu-major">
+                    {edu.Major} {edu.Specialization ? `• ${edu.Specialization}` : ''}
+                  </p>
+                  <p className="edu-inst">{edu.Institution}</p>
+                </div>
+
+                <div className="edu-meta">
+                  <span className="edu-duration">{edu.Duration}</span>
+                  {edu.GPA && (
+                    <span className="gpa-tag">CGPA: {edu.GPA}</span>
+                  )}
+                </div>
               </div>
 
-              <div className="edu-meta">
-                <span className="edu-duration">{edu.Duration}</span>
-                {edu.GPA && (
-                  <span className="gpa-tag">CGPA: {edu.GPA}</span>
-                )}
-              </div>
+              {edu.FocusAreas && edu.FocusAreas.length > 0 && (
+                <div className="focus-block">
+                  <span className="block-label">Focus Areas:</span>
+                  <div className="tag-group">
+                    {edu.FocusAreas.map((area, aIdx) => (
+                      <span key={aIdx} className="mono-tag">
+                        {area}
+                      </span>
+                    ))}
+                  </div>
+                </div>
+              )}
+
+              {edu.Coursework && edu.Coursework.length > 0 && (
+                <div className="focus-block">
+                  <span className="block-label">Coursework:</span>
+                  <div className="tag-group">
+                    {edu.Coursework.map((course, cIdx) => (
+                      <span key={cIdx} className="mono-tag">
+                        {course}
+                      </span>
+                    ))}
+                  </div>
+                </div>
+              )}
             </div>
-
-            {edu.FocusAreas && edu.FocusAreas.length > 0 && (
-              <div className="focus-block">
-                <span className="block-label">Focus Areas:</span>
-                <div className="tag-group">
-                  {edu.FocusAreas.map((area, aIdx) => (
-                    <span key={aIdx} className="mono-tag">
-                      {area}
-                    </span>
-                  ))}
-                </div>
-              </div>
-            )}
-
-            {edu.Coursework && edu.Coursework.length > 0 && (
-              <div className="focus-block">
-                <span className="block-label">Coursework:</span>
-                <div className="tag-group">
-                  {edu.Coursework.map((course, cIdx) => (
-                    <span key={cIdx} className="mono-tag">
-                      {course}
-                    </span>
-                  ))}
-                </div>
-              </div>
-            )}
-          </div>
+          </BorderGlow>
         ))}
       </div>
 
@@ -65,15 +78,9 @@ export default function Education({ educationData = [] }) {
           flex-direction: column;
           gap: 1.5rem;
         }
-        .edu-card {
-          background: var(--surface-1);
-          border: 1px solid var(--border-subtle);
-          border-radius: 12px;
+        .edu-card-content {
           padding: 1.75rem;
-          transition: border-color 0.2s ease;
-        }
-        .edu-card:hover {
-          border-color: var(--border-strong);
+          width: 100%;
         }
         .edu-top {
           display: flex;

@@ -1,6 +1,7 @@
 'use client';
 import React, { useState } from 'react';
 import { Bot, Menu, X } from 'lucide-react';
+import SpecularButton from './SpecularButton';
 
 export default function Navbar({ onOpenChat }) {
   const [isOpen, setIsOpen] = useState(false);
@@ -32,17 +33,29 @@ export default function Navbar({ onOpenChat }) {
             ))}
           </div>
 
-          <button onClick={onOpenChat} className="copilot-btn" aria-label="Open AI Copilot">
+          <SpecularButton
+            size="sm"
+            radius={8}
+            gradientColors={['#38bdf8', '#818cf8', '#c084fc']}
+            onClick={onOpenChat}
+            aria-label="Open AI Copilot"
+          >
             <Bot size={15} />
             <span>AI Copilot</span>
-          </button>
+          </SpecularButton>
         </nav>
 
         {/* Mobile controls */}
         <div className="mobile-actions">
-          <button onClick={onOpenChat} className="copilot-btn-icon" aria-label="Open AI Copilot">
-            <Bot size={16} />
-          </button>
+          <SpecularButton
+            size="xs"
+            radius={8}
+            gradientColors={['#38bdf8', '#818cf8', '#c084fc']}
+            onClick={onOpenChat}
+            aria-label="Open AI Copilot"
+          >
+            <Bot size={15} />
+          </SpecularButton>
           <button onClick={() => setIsOpen(!isOpen)} className="menu-btn" aria-label="Toggle menu">
             {isOpen ? <X size={20} /> : <Menu size={20} />}
           </button>
@@ -116,37 +129,8 @@ export default function Navbar({ onOpenChat }) {
         .nav-anchor:hover {
           color: #fff;
         }
-        .copilot-btn {
-          display: flex;
-          align-items: center;
-          gap: 0.45rem;
-          background: var(--surface-1);
-          border: 1px solid var(--border-strong);
-          color: var(--text-primary);
-          padding: 0.4rem 0.85rem;
-          border-radius: 8px;
-          font-size: 0.82rem;
-          font-weight: 500;
-          cursor: pointer;
-          transition: all 0.15s ease;
-        }
-        .copilot-btn:hover {
-          background: var(--surface-2);
-          border-color: var(--border-active);
-          color: #fff;
-        }
         .mobile-actions {
           display: none;
-        }
-        .copilot-btn-icon {
-          background: var(--surface-1);
-          border: 1px solid var(--border-strong);
-          color: var(--text-primary);
-          padding: 0.45rem;
-          border-radius: 8px;
-          display: flex;
-          align-items: center;
-          cursor: pointer;
         }
         .menu-btn {
           background: none;

@@ -1,4 +1,5 @@
 import React from 'react';
+import BorderGlow from './BorderGlow';
 
 export default function Training({ trainingData = [] }) {
   if (!trainingData || trainingData.length === 0) return null;
@@ -12,45 +13,57 @@ export default function Training({ trainingData = [] }) {
 
       <div className="training-list">
         {trainingData.map((item, idx) => (
-          <div key={idx} className="training-card">
-            <div className="training-header">
-              <div>
-                <h3 className="training-title">{item.Title}</h3>
-                <p className="training-subtitle">{item.Subtitle}</p>
+          <BorderGlow
+            key={idx}
+            borderRadius={12}
+            backgroundColor="#11141a"
+            glowColor="215 80 60"
+            colors={['#38bdf8', '#818cf8', '#c084fc']}
+            edgeSensitivity={30}
+            glowRadius={32}
+            glowIntensity={0.85}
+            coneSpread={25}
+          >
+            <div className="training-card-content">
+              <div className="training-header">
+                <div>
+                  <h3 className="training-title">{item.Title}</h3>
+                  <p className="training-subtitle">{item.Subtitle}</p>
+                </div>
+                <span className="training-duration">{item.Duration}</span>
               </div>
-              <span className="training-duration">{item.Duration}</span>
-            </div>
 
-            {item.ParsedDescription?.description && item.ParsedDescription.description.length > 0 && (
-              <ul className="points-list">
-                {item.ParsedDescription.description.map((point, pIdx) => (
-                  <li key={pIdx} className="point-item">
-                    <span className="dash">—</span>
-                    <span>{point}</span>
-                  </li>
-                ))}
-              </ul>
-            )}
+              {item.ParsedDescription?.description && item.ParsedDescription.description.length > 0 && (
+                <ul className="points-list">
+                  {item.ParsedDescription.description.map((point, pIdx) => (
+                    <li key={pIdx} className="point-item">
+                      <span className="dash">—</span>
+                      <span>{point}</span>
+                    </li>
+                  ))}
+                </ul>
+              )}
 
-            {item.ParsedDescription?.learning && item.ParsedDescription.learning.length > 0 && (
-              <div className="competencies-block">
-                <span className="comp-label">Competencies Mastered:</span>
-                <span className="comp-text">
-                  {item.ParsedDescription.learning.join(' • ')}
-                </span>
-              </div>
-            )}
-
-            {item.Stack && item.Stack.length > 0 && (
-              <div className="stack-row">
-                {item.Stack.map((tech, tIdx) => (
-                  <span key={tIdx} className="mono-tag">
-                    {tech}
+              {item.ParsedDescription?.learning && item.ParsedDescription.learning.length > 0 && (
+                <div className="competencies-block">
+                  <span className="comp-label">Competencies Mastered:</span>
+                  <span className="comp-text">
+                    {item.ParsedDescription.learning.join(' • ')}
                   </span>
-                ))}
-              </div>
-            )}
-          </div>
+                </div>
+              )}
+
+              {item.Stack && item.Stack.length > 0 && (
+                <div className="stack-row">
+                  {item.Stack.map((tech, tIdx) => (
+                    <span key={tIdx} className="mono-tag">
+                      {tech}
+                    </span>
+                  ))}
+                </div>
+              )}
+            </div>
+          </BorderGlow>
         ))}
       </div>
 
@@ -60,15 +73,9 @@ export default function Training({ trainingData = [] }) {
           flex-direction: column;
           gap: 1.5rem;
         }
-        .training-card {
-          background: var(--surface-1);
-          border: 1px solid var(--border-subtle);
-          border-radius: 12px;
+        .training-card-content {
           padding: 1.75rem;
-          transition: border-color 0.2s ease;
-        }
-        .training-card:hover {
-          border-color: var(--border-strong);
+          width: 100%;
         }
         .training-header {
           display: flex;

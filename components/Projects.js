@@ -1,6 +1,8 @@
 import React from 'react';
 import { ExternalLink, ArrowUpRight } from 'lucide-react';
 import { Github } from './Icons';
+import BorderGlow from './BorderGlow';
+import SpecularButton from './SpecularButton';
 
 export default function Projects({ projectsData = [] }) {
   if (!projectsData || projectsData.length === 0) return null;
@@ -14,77 +16,94 @@ export default function Projects({ projectsData = [] }) {
 
       <div className="projects-grid">
         {projectsData.map((project, idx) => (
-          <article key={idx} className="project-card">
-            {/* Top Bar */}
-            <div className="project-top">
-              <div>
-                <div className="title-row">
-                  <h3 className="project-name">{project.Title}</h3>
-                  <span className="project-date">{project.Duration}</span>
+          <BorderGlow
+            key={idx}
+            borderRadius={12}
+            backgroundColor="#11141a"
+            colors={['#38bdf8', '#818cf8', '#c084fc']}
+            edgeSensitivity={30}
+            glowRadius={35}
+            glowIntensity={0.9}
+            coneSpread={25}
+          >
+            <article className="project-card-content">
+              {/* Top Bar */}
+              <div className="project-top">
+                <div>
+                  <div className="title-row">
+                    <h3 className="project-name">{project.Title}</h3>
+                    <span className="project-date">{project.Duration}</span>
+                  </div>
+                  <p className="project-subtitle">{project.Subtitle}</p>
                 </div>
-                <p className="project-subtitle">{project.Subtitle}</p>
+
+                <div className="project-links">
+                  {project.GithubLink && (
+                    <SpecularButton
+                      as="a"
+                      href={project.GithubLink}
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      size="xs"
+                      radius={6}
+                      gradientColors={['#38bdf8', '#818cf8', '#c084fc']}
+                      aria-label="View Source Code"
+                    >
+                      <Github size={14} />
+                      <span>Source</span>
+                      <ArrowUpRight size={12} />
+                    </SpecularButton>
+                  )}
+                  {project.LiveLink && (
+                    <SpecularButton
+                      as="a"
+                      href={project.LiveLink}
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      size="xs"
+                      radius={6}
+                      gradientColors={['#38bdf8', '#818cf8', '#c084fc']}
+                      aria-label="View Live Project"
+                    >
+                      <ExternalLink size={14} />
+                      <span>Live</span>
+                    </SpecularButton>
+                  )}
+                </div>
               </div>
 
-              <div className="project-links">
-                {project.GithubLink && (
-                  <a
-                    href={project.GithubLink}
-                    target="_blank"
-                    rel="noopener noreferrer"
-                    className="icon-link"
-                    aria-label="View Source Code"
-                  >
-                    <Github size={16} />
-                    <span>Source</span>
-                    <ArrowUpRight size={13} />
-                  </a>
-                )}
-                {project.LiveLink && (
-                  <a
-                    href={project.LiveLink}
-                    target="_blank"
-                    rel="noopener noreferrer"
-                    className="icon-link"
-                    aria-label="View Live Project"
-                  >
-                    <ExternalLink size={16} />
-                    <span>Live</span>
-                  </a>
-                )}
-              </div>
-            </div>
+              {/* Bullets */}
+              {project.ParsedDescription?.description?.length > 0 && (
+                <ul className="details-list">
+                  {project.ParsedDescription.description.map((point, pIdx) => (
+                    <li key={pIdx} className="detail-item">
+                      <span className="bullet">—</span>
+                      <span>{point}</span>
+                    </li>
+                  ))}
+                </ul>
+              )}
 
-            {/* Bullets */}
-            {project.ParsedDescription?.description?.length > 0 && (
-              <ul className="details-list">
-                {project.ParsedDescription.description.map((point, pIdx) => (
-                  <li key={pIdx} className="detail-item">
-                    <span className="bullet">—</span>
-                    <span>{point}</span>
-                  </li>
+              {/* Learnings */}
+              {project.ParsedDescription?.learning?.length > 0 && (
+                <div className="learning-box">
+                  <span className="learning-label">Technical Takeaways:</span>
+                  <span className="learning-content">
+                    {project.ParsedDescription.learning.join(' • ')}
+                  </span>
+                </div>
+              )}
+
+              {/* Tech Stack */}
+              <div className="stack-wrap">
+                {(project.Stack || []).map((tech, tIdx) => (
+                  <span key={tIdx} className="mono-tag">
+                    {tech}
+                  </span>
                 ))}
-              </ul>
-            )}
-
-            {/* Learnings */}
-            {project.ParsedDescription?.learning?.length > 0 && (
-              <div className="learning-box">
-                <span className="learning-label">Technical Takeaways:</span>
-                <span className="learning-content">
-                  {project.ParsedDescription.learning.join(' • ')}
-                </span>
               </div>
-            )}
-
-            {/* Tech Stack */}
-            <div className="stack-wrap">
-              {(project.Stack || []).map((tech, tIdx) => (
-                <span key={tIdx} className="mono-tag">
-                  {tech}
-                </span>
-              ))}
-            </div>
-          </article>
+            </article>
+          </BorderGlow>
         ))}
       </div>
 
@@ -94,15 +113,9 @@ export default function Projects({ projectsData = [] }) {
           flex-direction: column;
           gap: 1.75rem;
         }
-        .project-card {
-          background: var(--surface-1);
-          border: 1px solid var(--border-subtle);
-          border-radius: 12px;
+        .project-card-content {
           padding: 2rem;
-          transition: border-color 0.2s ease;
-        }
-        .project-card:hover {
-          border-color: var(--border-strong);
+          width: 100%;
         }
         .project-top {
           display: flex;

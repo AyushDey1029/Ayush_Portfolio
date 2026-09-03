@@ -1,4 +1,5 @@
 import React from 'react';
+import BorderGlow from './BorderGlow';
 
 export default function Skills({ skillsData = [] }) {
   if (!skillsData || skillsData.length === 0) return null;
@@ -12,16 +13,28 @@ export default function Skills({ skillsData = [] }) {
 
       <div className="skills-grid">
         {skillsData.map((category, idx) => (
-          <div key={idx} className="skill-block">
-            <h3 className="skill-cat-title">{category.Category}</h3>
-            <div className="tags-container">
-              {(category.ItemsList || []).map((skill, sIdx) => (
-                <span key={sIdx} className="skill-pill">
-                  {skill}
-                </span>
-              ))}
+          <BorderGlow
+            key={idx}
+            borderRadius={10}
+            backgroundColor="#11141a"
+            glowColor="215 80 60"
+            colors={['#38bdf8', '#818cf8', '#c084fc']}
+            edgeSensitivity={30}
+            glowRadius={28}
+            glowIntensity={0.8}
+            coneSpread={25}
+          >
+            <div className="skill-block-content">
+              <h3 className="skill-cat-title">{category.Category}</h3>
+              <div className="tags-container">
+                {(category.ItemsList || []).map((skill, sIdx) => (
+                  <span key={sIdx} className="skill-pill">
+                    {skill}
+                  </span>
+                ))}
+              </div>
             </div>
-          </div>
+          </BorderGlow>
         ))}
       </div>
 
@@ -31,15 +44,9 @@ export default function Skills({ skillsData = [] }) {
           grid-template-columns: repeat(auto-fit, minmax(310px, 1fr));
           gap: 1.5rem;
         }
-        .skill-block {
-          background: var(--surface-1);
-          border: 1px solid var(--border-subtle);
-          border-radius: 10px;
+        .skill-block-content {
           padding: 1.5rem;
-          transition: border-color 0.2s ease;
-        }
-        .skill-block:hover {
-          border-color: var(--border-strong);
+          width: 100%;
         }
         .skill-cat-title {
           font-size: 0.95rem;

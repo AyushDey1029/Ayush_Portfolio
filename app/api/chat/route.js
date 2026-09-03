@@ -111,7 +111,7 @@ User Query: ${message}
 
 Instructions:
 - Keep the response friendly, crisp, and informative (2-4 concise paragraphs or bullet points).
-- If the user asks about contact details, provide his email (deyayush1029@gmail.com), phone (+91-6268106030), and GitHub/LinkedIn.
+- If the user asks about contact details, provide his email (deyayush1029@gmail.com) and GitHub/LinkedIn.
 - Always highlight his engineering strengths in Full-Stack development, AI/ML, and PyTorch.`;
 
           const response = await fetch(`https://generativelanguage.googleapis.com/v1beta/models/${modelName}:generateContent?key=${apiKey}`, {
@@ -173,7 +173,7 @@ Instructions:
 
     if (queryLower.includes('contact') || queryLower.includes('email') || queryLower.includes('hire') || queryLower.includes('reach')) {
       return NextResponse.json({
-        reply: `You can reach Ayush Dey directly via:\n\n• **Email:** deyayush1029@gmail.com\n• **Phone:** +91-6268106030\n• **LinkedIn:** [linkedin.com/in/ayush--dey](https://linkedin.com/in/ayush--dey)\n• **GitHub:** [github.com/AyushDey1029](https://github.com/AyushDey1029)`,
+        reply: `You can reach Ayush Dey directly via:\n\n• **Email:** deyayush1029@gmail.com\n• **LinkedIn:** [linkedin.com/in/ayush--dey](https://linkedin.com/in/ayush--dey)\n• **GitHub:** [github.com/AyushDey1029](https://github.com/AyushDey1029)`,
         source: 'excel-rag'
       });
     }

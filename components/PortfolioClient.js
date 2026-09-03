@@ -17,12 +17,10 @@ export default function PortfolioClient({ data }) {
   return (
     <>
       <Navbar onOpenChat={() => setIsChatOpen(true)} />
-      
+
       <main className="container">
         <section id="about">
-          <RevealOnScroll threshold={0.08}>
-            <Hero aboutData={data.About} />
-          </RevealOnScroll>
+          <Hero aboutData={data.About} />
         </section>
 
         <section id="skills" className="section">
@@ -45,9 +43,9 @@ export default function PortfolioClient({ data }) {
 
         <section id="certifications" className="section">
           <RevealOnScroll threshold={0.1}>
-            <Certifications 
-              certificationsData={data.Certifications} 
-              achievementsData={data.Achievements} 
+            <Certifications
+              certificationsData={data.Certifications}
+              achievementsData={data.Achievements}
             />
           </RevealOnScroll>
         </section>

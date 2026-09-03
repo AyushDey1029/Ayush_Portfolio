@@ -1,5 +1,5 @@
 import React from 'react';
-import { Briefcase } from 'lucide-react';
+import BorderGlow from './BorderGlow';
 
 export default function Experience({ experienceData = [] }) {
   const hasExperience = experienceData && experienceData.length > 0;
@@ -14,36 +14,58 @@ export default function Experience({ experienceData = [] }) {
       {hasExperience ? (
         <div className="exp-list">
           {experienceData.map((exp, idx) => (
-            <div key={idx} className="exp-item">
-              <div className="exp-top">
-                <div>
-                  <h3 className="exp-role">{exp.Role}</h3>
-                  <p className="exp-company">{exp.Company}</p>
+            <BorderGlow
+              key={idx}
+              borderRadius={12}
+              backgroundColor="#11141a"
+              glowColor="215 80 60"
+              colors={['#38bdf8', '#818cf8', '#c084fc']}
+              edgeSensitivity={30}
+              glowRadius={30}
+              glowIntensity={0.8}
+            >
+              <div className="exp-item-content">
+                <div className="exp-top">
+                  <div>
+                    <h3 className="exp-role">{exp.Role}</h3>
+                    <p className="exp-company">{exp.Company}</p>
+                  </div>
+                  <span className="exp-duration">{exp.Duration}</span>
                 </div>
-                <span className="exp-duration">{exp.Duration}</span>
+                {exp.Details && <p className="exp-details">{exp.Details}</p>}
               </div>
-              {exp.Details && <p className="exp-details">{exp.Details}</p>}
-            </div>
+            </BorderGlow>
           ))}
         </div>
       ) : (
-        <div className="open-box">
-          <div className="open-header">
-            <span className="status-pill">
-              <span className="status-dot" />
-              Open to Roles
-            </span>
+        <BorderGlow
+          borderRadius={12}
+          backgroundColor="#11141a"
+          glowColor="215 80 60"
+          colors={['#38bdf8', '#818cf8', '#c084fc']}
+          edgeSensitivity={30}
+          glowRadius={35}
+          glowIntensity={0.85}
+          coneSpread={25}
+        >
+          <div className="open-box-content">
+            <div className="open-header">
+              <span className="status-pill">
+                <span className="status-dot" />
+                Open to Roles
+              </span>
+            </div>
+            <h3 className="open-title">Seeking Full-Stack & Machine Learning Engineering Roles</h3>
+            <p className="open-desc">
+              Equipped with end-to-end production experience architecting crowdfunding platforms with automated LLM trust scoring, building multilingual NLP advisory pipelines, and training deep autoencoders in PyTorch. Actively seeking software engineering and AI/ML internships and full-time opportunities.
+            </p>
+            <div className="focus-pills">
+              <span className="mono-tag">Full-Stack Development (React, Node.js, Express, MongoDB)</span>
+              <span className="mono-tag">Machine Learning & Deep Learning (PyTorch, OpenCV)</span>
+              <span className="mono-tag">Generative AI & LLM Systems</span>
+            </div>
           </div>
-          <h3 className="open-title">Seeking Full-Stack & Machine Learning Engineering Roles</h3>
-          <p className="open-desc">
-            Equipped with end-to-end production experience architecting crowdfunding platforms with automated LLM trust scoring, building multilingual NLP advisory pipelines, and training deep autoencoders in PyTorch. Actively seeking software engineering and AI/ML internships and full-time opportunities.
-          </p>
-          <div className="focus-pills">
-            <span className="mono-tag">Full-Stack Development (React, Node.js, Express, MongoDB)</span>
-            <span className="mono-tag">Machine Learning & Deep Learning (PyTorch, OpenCV)</span>
-            <span className="mono-tag">Generative AI & LLM Systems</span>
-          </div>
-        </div>
+        </BorderGlow>
       )}
 
       <style jsx>{`
@@ -52,11 +74,9 @@ export default function Experience({ experienceData = [] }) {
           flex-direction: column;
           gap: 1.25rem;
         }
-        .exp-item {
-          background: var(--surface-1);
-          border: 1px solid var(--border-subtle);
-          border-radius: 12px;
+        .exp-item-content {
           padding: 1.5rem;
+          width: 100%;
         }
         .exp-top {
           display: flex;
@@ -83,11 +103,9 @@ export default function Experience({ experienceData = [] }) {
           font-size: 0.92rem;
           line-height: 1.6;
         }
-        .open-box {
-          background: var(--surface-1);
-          border: 1px solid var(--border-subtle);
-          border-radius: 12px;
+        .open-box-content {
           padding: 2.25rem;
+          width: 100%;
         }
         .open-header {
           margin-bottom: 1rem;

@@ -1,8 +1,12 @@
-import React from 'react';
-import { Mail, Phone, ExternalLink, ArrowUpRight } from 'lucide-react';
+import React, { useState } from 'react';
+import { Mail, ArrowUpRight } from 'lucide-react';
 import { Github, Linkedin } from './Icons';
+import SpecularButton from './SpecularButton';
+import UnifiedLanyard from './UnifiedLanyard';
 
 export default function Hero({ aboutData = [] }) {
+  const [contentVisible, setContentVisible] = useState(false);
+
   const introTexts = aboutData.filter(item => item.Category === 'Narrative').map(i => i.Value);
   const contacts = aboutData.filter(item => item.Category === 'Contact');
   const systemInfo = aboutData.filter(item => item.Category === 'SystemInfo');
@@ -14,84 +18,153 @@ export default function Hero({ aboutData = [] }) {
   const email = contacts.find(c => c.Key === 'email')?.Value || 'deyayush1029@gmail.com';
   const github = contacts.find(c => c.Key === 'github')?.Value || 'github.com/AyushDey1029';
   const linkedin = contacts.find(c => c.Key === 'linkedin')?.Value || 'linkedin.com/in/ayush--dey';
-  const phone = contacts.find(c => c.Key === 'phone')?.Value || '+91-6268106030';
 
   return (
     <section className="hero-wrap">
-      {/* Status indicator */}
-      <div className="status-container">
-        <span className="status-pill">
-          <span className="status-dot" />
-          Available for SWE & AI Opportunities
-        </span>
-      </div>
+      {/* Unified 3D Lanyard: Starts centered, glides to right-hand side, and docks */}
+      <UnifiedLanyard onSlideStart={() => setContentVisible(true)} />
 
-      {/* Main Title */}
-      <div className="hero-main">
-        <h1 className="hero-name">Ayush Dey</h1>
-        <p className="hero-title">
-          Full-Stack Software Engineer & Machine Learning Developer
-        </p>
-      </div>
+      <div className="hero-grid">
+        {/* Left Column: Information with dynamic pop-out */}
+        <div className={`hero-left-content ${contentVisible ? 'popping-out' : 'pre-pop'}`}>
+          {/* Status indicator */}
+          <div className="status-container">
+            <span className="status-pill">
+              <span className="status-dot" />
+              Available for SWE & AI Opportunities
+            </span>
+          </div>
 
-      {/* Narrative Bio */}
-      <div className="hero-bio">
-        {introTexts.length > 0 ? (
-          introTexts.map((text, idx) => (
-            <p key={idx} className="bio-paragraph">{text}</p>
-          ))
-        ) : (
-          <p className="bio-paragraph">
-            Computer Science undergraduate with rigorous focus on building scalable full-stack applications, deep learning autoencoder architectures in PyTorch, and production-grade LLM integrations.
-          </p>
-        )}
-      </div>
+          {/* Main Title */}
+          <div className="hero-main">
+            <h1 className="hero-name">Ayush Dey</h1>
+            <p className="hero-title">
+              Full-Stack Software Engineer & Machine Learning Developer
+            </p>
+          </div>
 
-      {/* Academic Highlights */}
-      <div className="academic-strip">
-        <div className="academic-item">
-          <span className="academic-label">Institution</span>
-          <span className="academic-value">{university}</span>
+          {/* Narrative Bio */}
+          <div className="hero-bio">
+            {introTexts.length > 0 ? (
+              introTexts.map((text, idx) => (
+                <p key={idx} className="bio-paragraph">{text}</p>
+              ))
+            ) : (
+              <p className="bio-paragraph">
+                Computer Science undergraduate with rigorous focus on building scalable full-stack applications, deep learning autoencoder architectures in PyTorch, and production-grade LLM integrations.
+              </p>
+            )}
+          </div>
+
+          {/* Academic Highlights */}
+          <div className="academic-strip">
+            <div className="academic-item">
+              <span className="academic-label">Institution</span>
+              <span className="academic-value">{university}</span>
+            </div>
+            <div className="academic-divider" />
+            <div className="academic-item">
+              <span className="academic-label">Program</span>
+              <span className="academic-value">{degree}</span>
+            </div>
+            <div className="academic-divider" />
+            <div className="academic-item">
+              <span className="academic-label">Academic Standing</span>
+              <span className="academic-value highlight-val">CGPA: {gpa}</span>
+            </div>
+          </div>
+
+          {/* Contact Links with Specular Buttons */}
+          <div className="contact-row">
+            <SpecularButton
+              as="a"
+              href={`mailto:${email}`}
+              size="sm"
+              radius={8}
+              gradientColors={['#38bdf8', '#818cf8', '#c084fc']}
+            >
+              <Mail size={16} />
+              <span>Email Me</span>
+            </SpecularButton>
+
+            <SpecularButton
+              as="a"
+              href={`https://${github}`}
+              target="_blank"
+              rel="noopener noreferrer"
+              size="sm"
+              radius={8}
+              gradientColors={['#38bdf8', '#818cf8', '#c084fc']}
+            >
+              <Github size={16} />
+              <span>GitHub</span>
+              <ArrowUpRight size={14} className="arrow-icon" />
+            </SpecularButton>
+
+            <SpecularButton
+              as="a"
+              href={`https://${linkedin}`}
+              target="_blank"
+              rel="noopener noreferrer"
+              size="sm"
+              radius={8}
+              gradientColors={['#38bdf8', '#818cf8', '#c084fc']}
+            >
+              <Linkedin size={16} />
+              <span>LinkedIn</span>
+              <ArrowUpRight size={14} className="arrow-icon" />
+            </SpecularButton>
+          </div>
         </div>
-        <div className="academic-divider" />
-        <div className="academic-item">
-          <span className="academic-label">Program</span>
-          <span className="academic-value">{degree}</span>
-        </div>
-        <div className="academic-divider" />
-        <div className="academic-item">
-          <span className="academic-label">Academic Standing</span>
-          <span className="academic-value highlight-val">CGPA: {gpa}</span>
-        </div>
-      </div>
 
-      {/* Contact Links */}
-      <div className="contact-row">
-        <a href={`mailto:${email}`} className="action-link primary-action">
-          <Mail size={16} />
-          <span>Email Me</span>
-        </a>
-        <a href={`https://${github}`} target="_blank" rel="noopener noreferrer" className="action-link">
-          <Github size={16} />
-          <span>GitHub</span>
-          <ArrowUpRight size={14} className="arrow-icon" />
-        </a>
-        <a href={`https://${linkedin}`} target="_blank" rel="noopener noreferrer" className="action-link">
-          <Linkedin size={16} />
-          <span>LinkedIn</span>
-          <ArrowUpRight size={14} className="arrow-icon" />
-        </a>
-        <a href={`tel:${phone}`} className="action-link">
-          <Phone size={16} />
-          <span>{phone}</span>
-        </a>
+        {/* Right Column Grid Placeholder: Reserved for docked card */}
+        <div className="hero-right-space" aria-hidden="true" />
       </div>
 
       <style jsx>{`
         .hero-wrap {
-          padding: 4.5rem 0 3.5rem;
+          padding: 3.5rem 0 3rem;
           border-bottom: 1px solid var(--border-subtle);
+          position: relative;
         }
+        .hero-grid {
+          display: grid;
+          grid-template-columns: 1.15fr 0.85fr;
+          gap: 2.5rem;
+          align-items: center;
+        }
+        .hero-left-content.pre-pop {
+          opacity: 0;
+          pointer-events: none;
+          transform: translateX(-40px);
+        }
+        .hero-left-content.popping-out {
+          opacity: 1;
+          pointer-events: auto;
+          transform: translateX(0);
+        }
+        .hero-left-content.popping-out > * {
+          animation: popOutContent 0.85s cubic-bezier(0.16, 1, 0.3, 1) both;
+        }
+        .hero-left-content.popping-out > *:nth-child(1) { animation-delay: 0.05s; }
+        .hero-left-content.popping-out > *:nth-child(2) { animation-delay: 0.15s; }
+        .hero-left-content.popping-out > *:nth-child(3) { animation-delay: 0.25s; }
+        .hero-left-content.popping-out > *:nth-child(4) { animation-delay: 0.35s; }
+        .hero-left-content.popping-out > *:nth-child(5) { animation-delay: 0.45s; }
+
+        @keyframes popOutContent {
+          0% {
+            opacity: 0;
+            transform: translateX(-45px) scale(0.97);
+            filter: blur(6px);
+          }
+          100% {
+            opacity: 1;
+            transform: translateX(0) scale(1);
+            filter: blur(0);
+          }
+        }
+
         .status-container {
           margin-bottom: 1.5rem;
         }
@@ -111,7 +184,6 @@ export default function Hero({ aboutData = [] }) {
           margin-bottom: 1.5rem;
         }
         .hero-bio {
-          max-width: 720px;
           margin-bottom: 2rem;
         }
         .bio-paragraph {
@@ -163,35 +235,20 @@ export default function Hero({ aboutData = [] }) {
           flex-wrap: wrap;
           gap: 0.75rem;
         }
-        .action-link {
-          display: inline-flex;
-          align-items: center;
-          gap: 0.45rem;
-          padding: 0.5rem 0.95rem;
-          background: var(--surface-1);
-          border: 1px solid var(--border-subtle);
-          border-radius: 8px;
-          color: var(--text-secondary);
-          font-size: 0.85rem;
-          font-weight: 500;
-          transition: all 0.15s ease;
-        }
-        .action-link:hover {
-          border-color: var(--border-active);
-          color: #fff;
-          background: var(--surface-2);
-        }
-        .primary-action {
-          background: var(--accent);
-          color: #fff;
-          border-color: var(--accent);
-        }
-        .primary-action:hover {
-          background: #1d4ed8;
-          border-color: #1d4ed8;
+        .hero-right-space {
+          min-height: 520px;
+          pointer-events: none;
         }
         .arrow-icon {
           color: var(--text-muted);
+        }
+        @media (max-width: 960px) {
+          .hero-grid {
+            grid-template-columns: 1fr;
+          }
+          .hero-right-space {
+            display: none;
+          }
         }
         @media (max-width: 768px) {
           .hero-name {

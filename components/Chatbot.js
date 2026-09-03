@@ -1,6 +1,7 @@
 'use client';
 import React, { useState, useRef, useEffect } from 'react';
 import { Bot, User, X, Send, CornerDownLeft } from 'lucide-react';
+import SpecularButton from './SpecularButton';
 
 export default function Chatbot({ isOpen, setIsOpen }) {
   const [messages, setMessages] = useState([
@@ -77,16 +78,20 @@ export default function Chatbot({ isOpen, setIsOpen }) {
 
   return (
     <>
-      {/* Discrete, Professional Toggle Button */}
-      <button
-        onClick={() => setIsOpen(!isOpen)}
-        className="assistant-pill"
-        aria-label="Toggle Portfolio Assistant"
-      >
-        <Bot size={16} />
-        <span>Ask Resume Assistant</span>
-        <span className="live-dot" />
-      </button>
+      {/* Specular Floating Toggle Pill */}
+      <div className="assistant-pill-fixed">
+        <SpecularButton
+          size="sm"
+          radius={24}
+          gradientColors={['#38bdf8', '#818cf8', '#c084fc']}
+          onClick={() => setIsOpen(!isOpen)}
+          aria-label="Toggle Portfolio Assistant"
+        >
+          <Bot size={16} />
+          <span>Ask Resume Assistant</span>
+          <span className="live-dot" />
+        </SpecularButton>
+      </div>
 
       {/* Clean Drawer */}
       {isOpen && (
@@ -133,17 +138,19 @@ export default function Chatbot({ isOpen, setIsOpen }) {
             <div ref={messagesEndRef} />
           </div>
 
-          {/* Quick Questions */}
+          {/* Quick Questions with Specular Buttons */}
           {messages.length < 3 && (
             <div className="prompts-bar">
               {quickPrompts.map((p, idx) => (
-                <button
+                <SpecularButton
                   key={idx}
+                  size="xs"
+                  radius={6}
+                  gradientColors={['#38bdf8', '#818cf8', '#c084fc']}
                   onClick={() => handleSend(p)}
-                  className="prompt-btn"
                 >
                   {p}
-                </button>
+                </SpecularButton>
               ))}
             </div>
           )}
@@ -163,19 +170,27 @@ export default function Chatbot({ isOpen, setIsOpen }) {
               onChange={(e) => setInput(e.target.value)}
               className="chat-field"
             />
-            <button
+            <SpecularButton
               type="submit"
+              size="xs"
+              radius={6}
+              gradientColors={['#38bdf8', '#818cf8', '#c084fc']}
               disabled={loading || !input.trim()}
-              className="send-button"
               aria-label="Submit"
             >
               <CornerDownLeft size={16} />
-            </button>
+            </SpecularButton>
           </form>
         </div>
       )}
 
       <style jsx>{`
+        .assistant-pill-fixed {
+          position: fixed;
+          bottom: 1.75rem;
+          right: 1.75rem;
+          z-index: 999;
+        }
         .assistant-pill {
           position: fixed;
           bottom: 1.75rem;

@@ -1,5 +1,7 @@
 import React from 'react';
 import { ArrowUpRight } from 'lucide-react';
+import BorderGlow from './BorderGlow';
+import SpecularButton from './SpecularButton';
 
 export default function Certifications({ certificationsData = [], achievementsData = [] }) {
   const hasCerts = certificationsData && certificationsData.length > 0;
@@ -17,41 +19,55 @@ export default function Certifications({ certificationsData = [], achievementsDa
       {hasCerts && (
         <div className="certs-grid">
           {certificationsData.map((cert, idx) => (
-            <div key={idx} className="cert-card">
-              <div className="cert-top">
-                <div>
-                  <h3 className="cert-title">{cert.Title}</h3>
-                  <p className="cert-issuer">{cert.Subtitle}</p>
-                </div>
-                <span className="cert-date">{cert.Duration}</span>
-              </div>
-
-              {cert.ParsedDescription?.description && cert.ParsedDescription.description.length > 0 && (
-                <p className="cert-desc">{cert.ParsedDescription.description.join(', ')}</p>
-              )}
-
-              <div className="cert-bottom">
-                <div className="stack-tags">
-                  {(cert.Stack || []).map((s, sIdx) => (
-                    <span key={sIdx} className="mono-tag">
-                      {s}
-                    </span>
-                  ))}
+            <BorderGlow
+              key={idx}
+              borderRadius={12}
+              backgroundColor="#11141a"
+              colors={['#38bdf8', '#818cf8', '#c084fc']}
+              edgeSensitivity={30}
+              glowRadius={30}
+              glowIntensity={0.8}
+              coneSpread={25}
+            >
+              <div className="cert-card-content">
+                <div className="cert-top">
+                  <div>
+                    <h3 className="cert-title">{cert.Title}</h3>
+                    <p className="cert-issuer">{cert.Subtitle}</p>
+                  </div>
+                  <span className="cert-date">{cert.Duration}</span>
                 </div>
 
-                {cert.ProofLink && cert.ProofLink !== '#' && (
-                  <a
-                    href={cert.ProofLink}
-                    target="_blank"
-                    rel="noopener noreferrer"
-                    className="verify-link"
-                  >
-                    <span>Verify</span>
-                    <ArrowUpRight size={13} />
-                  </a>
+                {cert.ParsedDescription?.description && cert.ParsedDescription.description.length > 0 && (
+                  <p className="cert-desc">{cert.ParsedDescription.description.join(', ')}</p>
                 )}
+
+                <div className="cert-bottom">
+                  <div className="stack-tags">
+                    {(cert.Stack || []).map((s, sIdx) => (
+                      <span key={sIdx} className="mono-tag">
+                        {s}
+                      </span>
+                    ))}
+                  </div>
+
+                  {cert.ProofLink && cert.ProofLink !== '#' && (
+                    <SpecularButton
+                      as="a"
+                      href={cert.ProofLink}
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      size="xs"
+                      radius={6}
+                      gradientColors={['#38bdf8', '#818cf8', '#c084fc']}
+                    >
+                      <span>Verify</span>
+                      <ArrowUpRight size={12} />
+                    </SpecularButton>
+                  )}
+                </div>
               </div>
-            </div>
+            </BorderGlow>
           ))}
         </div>
       )}
@@ -63,15 +79,26 @@ export default function Certifications({ certificationsData = [], achievementsDa
           </h3>
           <div style={{ display: 'flex', flexDirection: 'column', gap: '0.75rem' }}>
             {achievementsData.map((ach, idx) => (
-              <div key={idx} className="achievement-row">
-                <div>
-                  <h4 style={{ fontSize: '0.95rem', fontWeight: '600', color: '#fff' }}>{ach.Title}</h4>
-                  <p style={{ fontSize: '0.85rem', color: 'var(--text-secondary)' }}>{ach.Subtitle}</p>
+              <BorderGlow
+                key={idx}
+                borderRadius={8}
+                backgroundColor="#11141a"
+                glowColor="215 80 60"
+                colors={['#38bdf8', '#2563eb', '#64748b']}
+                edgeSensitivity={30}
+                glowRadius={25}
+                glowIntensity={0.8}
+              >
+                <div className="achievement-row-content">
+                  <div>
+                    <h4 style={{ fontSize: '0.95rem', fontWeight: '600', color: '#fff' }}>{ach.Title}</h4>
+                    <p style={{ fontSize: '0.85rem', color: 'var(--text-secondary)' }}>{ach.Subtitle}</p>
+                  </div>
+                  <span style={{ fontFamily: 'var(--font-mono)', fontSize: '0.8rem', color: 'var(--text-muted)' }}>
+                    {ach.Duration}
+                  </span>
                 </div>
-                <span style={{ fontFamily: 'var(--font-mono)', fontSize: '0.8rem', color: 'var(--text-muted)' }}>
-                  {ach.Duration}
-                </span>
-              </div>
+              </BorderGlow>
             ))}
           </div>
         </div>
@@ -83,18 +110,13 @@ export default function Certifications({ certificationsData = [], achievementsDa
           grid-template-columns: repeat(auto-fit, minmax(310px, 1fr));
           gap: 1.5rem;
         }
-        .cert-card {
-          background: var(--surface-1);
-          border: 1px solid var(--border-subtle);
-          border-radius: 12px;
+        .cert-card-content {
           padding: 1.5rem;
           display: flex;
           flex-direction: column;
           justify-content: space-between;
-          transition: border-color 0.2s ease;
-        }
-        .cert-card:hover {
-          border-color: var(--border-strong);
+          width: 100%;
+          min-height: 180px;
         }
         .cert-top {
           display: flex;
@@ -146,14 +168,12 @@ export default function Certifications({ certificationsData = [], achievementsDa
         .verify-link:hover {
           color: var(--accent-text);
         }
-        .achievement-row {
+        .achievement-row-content {
           display: flex;
           justify-content: space-between;
           align-items: center;
           padding: 1rem 1.25rem;
-          background: var(--surface-1);
-          border: 1px solid var(--border-subtle);
-          border-radius: 8px;
+          width: 100%;
         }
       `}</style>
     </div>
