@@ -1,12 +1,9 @@
-import React, { useState } from 'react';
+import React from 'react';
 import { Mail, ArrowUpRight } from 'lucide-react';
 import { Github, Linkedin } from './Icons';
 import SpecularButton from './SpecularButton';
-import UnifiedLanyard from './UnifiedLanyard';
 
-export default function Hero({ aboutData = [] }) {
-  const [contentVisible, setContentVisible] = useState(false);
-
+export default function Hero({ aboutData = [], contentVisible = false }) {
   const introTexts = aboutData.filter(item => item.Category === 'Narrative').map(i => i.Value);
   const contacts = aboutData.filter(item => item.Category === 'Contact');
   const systemInfo = aboutData.filter(item => item.Category === 'SystemInfo');
@@ -21,9 +18,6 @@ export default function Hero({ aboutData = [] }) {
 
   return (
     <section className="hero-wrap">
-      {/* Unified 3D Lanyard: Starts centered, glides to right-hand side, and docks */}
-      <UnifiedLanyard onSlideStart={() => setContentVisible(true)} />
-
       <div className="hero-grid">
         {/* Left Column: Information with dynamic pop-out */}
         <div className={`hero-left-content ${contentVisible ? 'popping-out' : 'pre-pop'}`}>
@@ -132,6 +126,10 @@ export default function Hero({ aboutData = [] }) {
           grid-template-columns: 1.15fr 0.85fr;
           gap: 2.5rem;
           align-items: center;
+        }
+        .hero-left-content {
+          position: relative;
+          z-index: 20;
         }
         .hero-left-content.pre-pop {
           opacity: 0;
@@ -256,6 +254,16 @@ export default function Hero({ aboutData = [] }) {
           }
           .academic-divider {
             display: none;
+          }
+        }
+        @media (prefers-reduced-motion: reduce) {
+          .hero-left-content.pre-pop {
+            opacity: 1;
+            transform: none;
+            pointer-events: auto;
+          }
+          .hero-left-content.popping-out > * {
+            animation: none !important;
           }
         }
       `}</style>

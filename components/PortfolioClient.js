@@ -10,17 +10,22 @@ import Education from './Education';
 import Experience from './Experience';
 import Chatbot from './Chatbot';
 import RevealOnScroll from './RevealOnScroll';
+import UnifiedLanyard from './UnifiedLanyard';
 
 export default function PortfolioClient({ data }) {
+  const [contentVisible, setContentVisible] = useState(false);
   const [isChatOpen, setIsChatOpen] = useState(false);
 
   return (
     <>
+      {/* The single full-page 3D Lanyard component */}
+      <UnifiedLanyard onSlideStart={() => setContentVisible(true)} />
+
       <Navbar onOpenChat={() => setIsChatOpen(true)} />
 
       <main className="container">
         <section id="about">
-          <Hero aboutData={data.About} />
+          <Hero aboutData={data.About} contentVisible={contentVisible} />
         </section>
 
         <section id="skills" className="section">
