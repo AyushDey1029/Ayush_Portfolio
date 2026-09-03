@@ -2,7 +2,7 @@
   position: absolute;
   top: 0;
   left: 0;
-  width: 100vw;
+  width: 100%;
   height: 100vh;
   z-index: 5;
   pointer-events: none;
@@ -10,31 +10,10 @@
   user-select: none;
 }
 
-.unified-lanyard-wrap.is-intro {
-  position: fixed;
-  z-index: 1000;
-  pointer-events: auto;
-}
-
 .unified-lanyard-wrap .unified-canvas {
   width: 100% !important;
   height: 100% !important;
   pointer-events: auto;
-}
-
-/* Dark Backdrop Overlay — visible during dropping + settling */
-.unified-backdrop {
-  position: fixed;
-  inset: 0;
-  background: #090a0d;
-  z-index: 998;
-  opacity: 1;
-  pointer-events: none;
-  transition: opacity 1.1s cubic-bezier(0.16, 1, 0.3, 1);
-}
-
-.unified-backdrop.hidden {
-  opacity: 0;
 }
 
 /* Skip Intro Button */
@@ -68,11 +47,7 @@
 
 /* prefers-reduced-motion: skip all animations */
 @media (prefers-reduced-motion: reduce) {
-  .unified-backdrop {
-    transition: none;
-  }
   .unified-lanyard-wrap {
-    /* Immediately in docked state */
     position: absolute !important;
     z-index: 5 !important;
     pointer-events: none !important;

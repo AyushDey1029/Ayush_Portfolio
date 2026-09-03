@@ -79,17 +79,12 @@ export default function UnifiedLanyard({ onSlideStart }) {
 
   if (!mounted) return null;
 
-  const isIntro = phase === 'dropping' || phase === 'settling';
+  const showSkip = phase === 'dropping' || phase === 'settling';
 
   return (
     <>
-      {/* Dark backdrop during intro phases */}
-      {phase !== 'docked' && (
-        <div className={`unified-backdrop ${phase === 'shifting' || phase === 'docked' ? 'hidden' : ''}`} />
-      )}
-
       {/* Skip button */}
-      {isIntro && (
+      {showSkip && (
         <button onClick={handleSkip} className="unified-skip-btn" aria-label="Skip Intro">
           <span>Skip Intro</span>
           <span>→</span>
@@ -97,12 +92,17 @@ export default function UnifiedLanyard({ onSlideStart }) {
       )}
 
       {/* Full Page Canvas */}
-      <div className={`unified-lanyard-wrap ${isIntro ? 'is-intro' : 'docked'}`}>
+      <div className="unified-lanyard-wrap">
         <Canvas
           className="unified-canvas"
           camera={{ position: [0, 0, 24], fov: isMobile ? 26 : 21 }}
-          dpr={[1, isMobile ? 1.5 : 2]}
-          gl={{ alpha: true, antialias: true }}
+          dpr={[1, isMobile ? 1.25 : 1.5]}
+          gl={{
+            alpha: true,
+            antialias: true,
+            powerPreference: 'high-performance',
+            depth: true
+          }}
           onCreated={({ gl }) => gl.setClearColor(new THREE.Color(0x000000), 0)}
         >
           <ambientLight intensity={Math.PI * 0.9} />
@@ -118,7 +118,7 @@ export default function UnifiedLanyard({ onSlideStart }) {
             />
           </Physics>
 
-          <Environment blur={0.75}>
+          <Environment frames={1} resolution={256} blur={0.75}>
             <Lightformer intensity={2.5} color="#38bdf8" position={[0, -1, 5]} rotation={[0, 0, Math.PI / 3]} scale={[100, 0.1, 1]} />
             <Lightformer intensity={3} color="#818cf8" position={[-2, 1, 3]} rotation={[0, 0, Math.PI / 3]} scale={[100, 0.1, 1]} />
             <Lightformer intensity={3} color="#c084fc" position={[2, 1, 3]} rotation={[0, 0, Math.PI / 3]} scale={[100, 0.1, 1]} />
@@ -128,6 +128,39 @@ export default function UnifiedLanyard({ onSlideStart }) {
       </div>
     </>
   );
+}
+
+let cachedCardGeometry = null;
+
+function buildCompositeTexture(baseMap, frontImg, backImg) {
+  const baseImg = baseMap?.image;
+  const W = baseImg?.width || 1024;
+  const H = baseImg?.height || 1024;
+  const canvas = document.createElement('canvas');
+  canvas.width = W; canvas.height = H;
+  const ctx = canvas.getContext('2d');
+  if (!ctx) return baseMap;
+  if (baseImg) ctx.drawImage(baseImg, 0, 0, W, H);
+
+  const drawFitted = (img, rect) => {
+    if (!img) return;
+    const rx = rect.x * W, ry = rect.y * H, rw = rect.w * W, rh = rect.h * H;
+    const s = Math.max(rw / img.width, rh / img.height);
+    const dw = img.width * s, dh = img.height * s;
+    const dx = rx + (rw - dw) / 2, dy = ry + (rh - dh) / 2;
+    ctx.save(); ctx.beginPath(); ctx.rect(rx, ry, rw, rh); ctx.clip();
+    ctx.drawImage(img, dx, dy, dw, dh); ctx.restore();
+  };
+
+  if (frontImg) drawFitted(frontImg, FRONT_UV_RECT);
+  if (backImg) drawFitted(backImg, BACK_UV_RECT);
+
+  const tex = new THREE.CanvasTexture(canvas);
+  tex.colorSpace = THREE.SRGBColorSpace;
+  tex.flipY = baseMap ? baseMap.flipY : false;
+  tex.anisotropy = 8;
+  tex.needsUpdate = true;
+  return tex;
 }
 
 // ---------------------------------------------------------------------------
@@ -159,43 +192,21 @@ function LanyardBand({
   const profileTex = useTexture('/assets/lanyard/card-profile.png');
   const backTex = useTexture('/assets/lanyard/card-back.png');
 
-  // Composite card texture
-  const cardMap = useMemo(() => {
-    const baseMap = materials.base?.map;
-    const baseImg = baseMap?.image;
-    const W = baseImg?.width || 1024;
-    const H = baseImg?.height || 1024;
-    const canvas = document.createElement('canvas');
-    canvas.width = W; canvas.height = H;
-    const ctx = canvas.getContext('2d');
-    if (!ctx) return baseMap;
-    if (baseImg) ctx.drawImage(baseImg, 0, 0, W, H);
+  // Pre-generate composite textures once to prevent stutter during live transitions
+  const craftMap = useMemo(() => {
+    return buildCompositeTexture(materials.base?.map, craftTex?.image, backTex?.image);
+  }, [craftTex?.image, backTex?.image, materials.base?.map]);
 
-    const drawFitted = (img, rect) => {
-      if (!img) return;
-      const rx = rect.x * W, ry = rect.y * H, rw = rect.w * W, rh = rect.h * H;
-      const s = Math.max(rw / img.width, rh / img.height);
-      const dw = img.width * s, dh = img.height * s;
-      const dx = rx + (rw - dw) / 2, dy = ry + (rh - dh) / 2;
-      ctx.save(); ctx.beginPath(); ctx.rect(rx, ry, rw, rh); ctx.clip();
-      ctx.drawImage(img, dx, dy, dw, dh); ctx.restore();
-    };
+  const profileMap = useMemo(() => {
+    return buildCompositeTexture(materials.base?.map, profileTex?.image, backTex?.image);
+  }, [profileTex?.image, backTex?.image, materials.base?.map]);
 
-    const front = textureMode === 'profile' ? profileTex.image : craftTex.image;
-    if (front) drawFitted(front, FRONT_UV_RECT);
-    if (backTex?.image) drawFitted(backTex.image, BACK_UV_RECT);
+  const cardMap = textureMode === 'profile' ? profileMap : craftMap;
 
-    const tex = new THREE.CanvasTexture(canvas);
-    tex.colorSpace = THREE.SRGBColorSpace;
-    tex.flipY = baseMap ? baseMap.flipY : false;
-    tex.anisotropy = 16;
-    tex.needsUpdate = true;
-    return tex;
-  }, [textureMode, craftTex, profileTex, backTex, materials.base?.map]);
-
-  // Seamlessly bridge and fill the circular punch hole in card.glb so only the slit is visible
+  // Seamlessly bridge and fill the circular punch hole in card.glb (cached across renders)
   const cardGeometry = useMemo(() => {
     if (!nodes?.card?.geometry) return null;
+    if (cachedCardGeometry) return cachedCardGeometry;
     const geom = nodes.card.geometry.clone();
 
     // Front face punch-hole perimeter vertices (sorted CCW)
@@ -215,6 +226,7 @@ function LanyardBand({
     const combined = new Uint16Array([...origIndices, ...newIndices]);
     geom.setIndex(new THREE.BufferAttribute(combined, 1));
     geom.computeVertexNormals();
+    cachedCardGeometry = geom;
     return geom;
   }, [nodes?.card?.geometry]);
 
@@ -240,6 +252,7 @@ function LanyardBand({
   const ANCHOR_Y = 8.0;
 
   const timeRef = useRef(0);
+  const shiftTime = useRef(0);
   // Phase transition refs (fire-once guards)
   const settledFired = useRef(false);
   const swingDoneFired = useRef(false);
@@ -250,7 +263,7 @@ function LanyardBand({
   const reducedMotionApplied = useRef(false);
 
   useFrame((state, delta) => {
-    const dt = Math.min(delta, 0.05);
+    const dt = Math.min(delta, 0.033);
     timeRef.current += dt;
     const t = timeRef.current;
 
@@ -317,18 +330,23 @@ function LanyardBand({
       }
     }
 
-    // ── Phase: SHIFTING — animate anchor rightward ──
-    if (phase === 'shifting' || phase === 'docked') {
+    // ── Phase: SHIFTING — smooth natural gliding to the right ──
+    if (phase === 'shifting') {
+      shiftTime.current += dt;
       const targetX = isMobile ? 0 : 3.6;
-      const diffX = targetX - anchorX.current;
-      // Smooth exponential ease-out
-      anchorX.current += diffX * Math.min(dt * 2.8, 1);
+      const DURATION = 1.15;
+      const p = Math.min(shiftTime.current / DURATION, 1);
+      // Smooth sinusoidal ease-in-out (zero initial acceleration, zero final snap)
+      const ease = 0.5 - 0.5 * Math.cos(Math.PI * p);
+      anchorX.current = targetX * ease;
 
-      if (Math.abs(diffX) < 0.04 && !dockedFired.current) {
+      if (p >= 1 && !dockedFired.current) {
         dockedFired.current = true;
-        anchorX.current = targetX; // snap
+        anchorX.current = targetX;
         onDocked();
       }
+    } else if (phase === 'docked') {
+      anchorX.current = isMobile ? 0 : 3.6;
     }
 
     fixed.current?.setNextKinematicTranslation({ x: anchorX.current, y: ANCHOR_Y, z: 0 });
@@ -437,8 +455,18 @@ function LanyardBand({
           lineWidth={isMobile ? 1.15 : 1.35}
         />
       </mesh>
+
+      {/* Pre-warm profile texture into GPU VRAM to ensure 0ms swap latency */}
+      <mesh position={[0, -100, 0]} visible={false}>
+        <planeGeometry args={[0.01, 0.01]} />
+        <meshBasicMaterial map={profileMap} />
+      </mesh>
     </>
   );
 }
 
 useGLTF.preload('/assets/lanyard/card.glb');
+useTexture.preload('/assets/lanyard/lanyard.png');
+useTexture.preload('/assets/lanyard/card-front.png');
+useTexture.preload('/assets/lanyard/card-profile.png');
+useTexture.preload('/assets/lanyard/card-back.png');

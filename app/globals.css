@@ -54,6 +54,8 @@ ul {
   max-width: 1080px;
   margin: 0 auto;
   padding: 0 1.75rem;
+  position: relative;
+  z-index: 1;
 }
 
 .section {

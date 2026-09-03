@@ -143,6 +143,7 @@ export default function Hero({ aboutData = [], contentVisible = false }) {
         }
         .hero-left-content.popping-out > * {
           animation: popOutContent 0.85s cubic-bezier(0.16, 1, 0.3, 1) both;
+          will-change: transform, opacity;
         }
         .hero-left-content.popping-out > *:nth-child(1) { animation-delay: 0.05s; }
         .hero-left-content.popping-out > *:nth-child(2) { animation-delay: 0.15s; }
@@ -153,13 +154,11 @@ export default function Hero({ aboutData = [], contentVisible = false }) {
         @keyframes popOutContent {
           0% {
             opacity: 0;
-            transform: translateX(-45px) scale(0.97);
-            filter: blur(6px);
+            transform: translateX(-35px) scale(0.98);
           }
           100% {
             opacity: 1;
             transform: translateX(0) scale(1);
-            filter: blur(0);
           }
         }
 
