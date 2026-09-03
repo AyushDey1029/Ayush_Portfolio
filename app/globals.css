@@ -29,14 +29,16 @@ html {
   padding: 0;
 }
 
+html,
 body {
-  background-color: var(--bg-color);
+  background-color: #090a0d !important;
   color: var(--text-primary);
   font-family: var(--font-sans);
   line-height: 1.65;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
   overflow-x: hidden;
+  min-height: 100%;
 }
 
 a {

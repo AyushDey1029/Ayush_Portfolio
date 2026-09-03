@@ -14,6 +14,7 @@
   width: 100% !important;
   height: 100% !important;
   pointer-events: auto;
+  touch-action: pan-y;
 }
 
 /* Skip Intro Button */

@@ -90,3 +90,18 @@
   justify-content: center;
   gap: 0.45rem;
 }
+
+@media (max-width: 960px) {
+  .specular-button__fx {
+    display: none !important;
+  }
+  .specular-button {
+    border: 1px solid rgba(56, 189, 248, 0.4) !important;
+    background: rgba(17, 20, 26, 0.92) !important;
+    box-shadow: 0 4px 16px rgba(0, 0, 0, 0.5), 0 0 10px rgba(56, 189, 248, 0.12) !important;
+  }
+  .specular-button:active {
+    border-color: rgba(129, 140, 248, 0.8) !important;
+    background: rgba(22, 27, 34, 0.98) !important;
+  }
+}

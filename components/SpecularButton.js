@@ -129,6 +129,11 @@ const SpecularButton = ({
     const fx = fxRef.current;
     if (!btn || !fx) return;
 
+    // On mobile / touch devices, skip WebGL to avoid exhausting mobile WebGL context limits
+    if (typeof window !== 'undefined' && window.innerWidth < 960) {
+      return;
+    }
+
     let gl;
     let renderer;
     try {
