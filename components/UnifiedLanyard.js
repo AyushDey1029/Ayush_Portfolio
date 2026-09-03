@@ -193,6 +193,31 @@ function LanyardBand({
     return tex;
   }, [textureMode, craftTex, profileTex, backTex, materials.base?.map]);
 
+  // Seamlessly bridge and fill the circular punch hole in card.glb so only the slit is visible
+  const cardGeometry = useMemo(() => {
+    if (!nodes?.card?.geometry) return null;
+    const geom = nodes.card.geometry.clone();
+
+    // Front face punch-hole perimeter vertices (sorted CCW)
+    const frontRing = [13, 6, 12, 1, 11, 0, 10, 2, 9, 7, 3, 5, 8, 4];
+    // Back face punch-hole perimeter vertices (sorted CW)
+    const backRing = [483, 486, 468, 392, 464, 388, 471, 417, 474, 489, 476, 384, 462, 481, 394, 425];
+
+    const newIndices = [];
+    for (let i = 1; i < frontRing.length - 1; i++) {
+      newIndices.push(frontRing[0], frontRing[i], frontRing[i + 1]);
+    }
+    for (let i = 1; i < backRing.length - 1; i++) {
+      newIndices.push(backRing[0], backRing[i + 1], backRing[i]);
+    }
+
+    const origIndices = Array.from(geom.index.array);
+    const combined = new Uint16Array([...origIndices, ...newIndices]);
+    geom.setIndex(new THREE.BufferAttribute(combined, 1));
+    geom.computeVertexNormals();
+    return geom;
+  }, [nodes?.card?.geometry]);
+
   const [curve] = useState(() =>
     new THREE.CatmullRomCurve3([new THREE.Vector3(), new THREE.Vector3(), new THREE.Vector3(), new THREE.Vector3()])
   );
@@ -377,7 +402,7 @@ function LanyardBand({
             }}
           >
             {nodes?.card && (
-              <mesh geometry={nodes.card.geometry}>
+              <mesh geometry={cardGeometry || nodes.card.geometry}>
                 <meshPhysicalMaterial
                   map={cardMap}
                   map-anisotropy={16}
