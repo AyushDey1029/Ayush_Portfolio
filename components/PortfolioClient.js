@@ -63,9 +63,12 @@ export default function PortfolioClient({ data }) {
       {/* The single full-page 3D Lanyard component */}
       <UnifiedLanyard onSlideStart={() => setContentVisible(true)} />
 
-      <div className={`portfolio-content-wrap ${contentVisible ? 'visible' : 'hidden-during-intro'}`}>
+      {/* Top Sticky Navbar at z-index: 100 so 3D band passes cleanly behind it */}
+      <div className={`portfolio-navbar-wrap ${contentVisible ? 'visible' : 'hidden-during-intro'}`}>
         <Navbar onOpenChat={() => setIsChatOpen(true)} />
+      </div>
 
+      <div className={`portfolio-content-wrap ${contentVisible ? 'visible' : 'hidden-during-intro'}`}>
         <main className="container">
         <section id="about">
           <Hero aboutData={data.About} contentVisible={contentVisible} />

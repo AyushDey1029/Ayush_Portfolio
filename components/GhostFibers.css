@@ -16,6 +16,23 @@
   opacity: 0.85;
 }
 
+.portfolio-navbar-wrap {
+  position: sticky;
+  top: 0;
+  z-index: 100;
+  transition: opacity 0.85s cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+.portfolio-navbar-wrap.hidden-during-intro {
+  opacity: 0;
+  pointer-events: none;
+}
+
+.portfolio-navbar-wrap.visible {
+  opacity: 1;
+  pointer-events: auto;
+}
+
 .portfolio-content-wrap {
   position: relative;
   z-index: 10;

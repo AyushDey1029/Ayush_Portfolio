@@ -4,7 +4,7 @@
   left: 0;
   width: 100%;
   height: 100vh;
-  z-index: 5;
+  z-index: 15;
   pointer-events: none;
   overflow: hidden;
   user-select: none;
@@ -49,7 +49,7 @@
 @media (prefers-reduced-motion: reduce) {
   .unified-lanyard-wrap {
     position: absolute !important;
-    z-index: 5 !important;
+    z-index: 15 !important;
     pointer-events: none !important;
   }
   .unified-lanyard-wrap .unified-canvas {

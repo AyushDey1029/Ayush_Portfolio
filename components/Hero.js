@@ -131,6 +131,9 @@ export default function Hero({ aboutData = [], contentVisible = false }) {
           position: relative;
           z-index: 20;
         }
+        .hero-right-space {
+          pointer-events: none;
+        }
         .hero-left-content.pre-pop {
           opacity: 0;
           pointer-events: none;

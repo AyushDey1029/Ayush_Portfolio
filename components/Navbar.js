@@ -79,12 +79,12 @@ export default function Navbar({ onOpenChat }) {
 
       <style jsx>{`
         .nav-header {
-          position: sticky;
-          top: 0;
+          position: relative;
+          width: 100%;
           z-index: 100;
-          background: rgba(9, 10, 13, 0.88);
-          backdrop-filter: blur(12px);
-          -webkit-backdrop-filter: blur(12px);
+          background: rgba(9, 10, 13, 0.94);
+          backdrop-filter: blur(16px);
+          -webkit-backdrop-filter: blur(16px);
           border-bottom: 1px solid var(--border-subtle);
         }
         .nav-container {
