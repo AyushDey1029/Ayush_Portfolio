@@ -28,6 +28,7 @@
   transition: transform 0.15s ease, opacity 0.15s ease;
   text-decoration: none;
   user-select: none;
+  pointer-events: auto !important;
 }
 
 .specular-button:active {
@@ -89,6 +90,7 @@
   align-items: center;
   justify-content: center;
   gap: 0.45rem;
+  pointer-events: none;
 }
 
 @media (max-width: 960px) {

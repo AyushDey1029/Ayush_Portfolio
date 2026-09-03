@@ -7,6 +7,7 @@ import SpecularButton from './SpecularButton';
 export default function Footer({ aboutData = [] }) {
   const contacts = aboutData.filter(item => item.Category === 'Contact');
   const email = contacts.find(c => c.Key === 'email')?.Value || 'deyayush1029@gmail.com';
+  const gmailComposeUrl = `https://mail.google.com/mail/?view=cm&fs=1&to=${encodeURIComponent(email)}`;
   const github = contacts.find(c => c.Key === 'github')?.Value || 'github.com/AyushDey1029';
   const linkedin = contacts.find(c => c.Key === 'linkedin')?.Value || 'linkedin.com/in/ayush--dey';
 
@@ -41,7 +42,9 @@ export default function Footer({ aboutData = [] }) {
           <div className="footer-actions">
             <SpecularButton
               as="a"
-              href={`mailto:${email}`}
+              href={gmailComposeUrl}
+              target="_blank"
+              rel="noopener noreferrer"
               size="sm"
               radius={8}
               gradientColors={['#38bdf8', '#818cf8', '#c084fc']}
@@ -88,9 +91,11 @@ export default function Footer({ aboutData = [] }) {
               <Linkedin size={18} />
             </a>
             <a
-              href={`mailto:${email}`}
+              href={gmailComposeUrl}
+              target="_blank"
+              rel="noopener noreferrer"
               className="social-btn"
-              aria-label="Send Email"
+              aria-label="Send Email via Gmail"
             >
               <Mail size={18} />
             </a>

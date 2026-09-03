@@ -12,9 +12,14 @@ export default function Hero({ aboutData = [], contentVisible = false }) {
   const university = systemInfo.find(s => s.Key === 'university')?.Value || 'Lovely Professional University';
   const degree = systemInfo.find(s => s.Key === 'degree')?.Value || 'B.Tech - Computer Science and Engineering';
 
-  const email = contacts.find(c => c.Key === 'email')?.Value || 'deyayush1029@gmail.com';
-  const github = contacts.find(c => c.Key === 'github')?.Value || 'github.com/AyushDey1029';
-  const linkedin = contacts.find(c => c.Key === 'linkedin')?.Value || 'linkedin.com/in/ayush--dey';
+  const emailItem = contacts.find(c => c.Key === 'email');
+  const githubItem = contacts.find(c => c.Key === 'github');
+  const linkedinItem = contacts.find(c => c.Key === 'linkedin');
+
+  const email = emailItem?.Value || 'deyayush1029@gmail.com';
+  const emailHref = `https://mail.google.com/mail/?view=cm&fs=1&to=${encodeURIComponent(email)}`;
+  const githubHref = githubItem?.Href || (githubItem?.Value ? (githubItem.Value.startsWith('http') ? githubItem.Value : `https://${githubItem.Value}`) : 'https://github.com/AyushDey1029');
+  const linkedinHref = linkedinItem?.Href || (linkedinItem?.Value ? (linkedinItem.Value.startsWith('http') ? linkedinItem.Value : `https://${linkedinItem.Value}`) : 'https://linkedin.com/in/ayush--dey');
 
   return (
     <section className="hero-wrap">
@@ -72,7 +77,9 @@ export default function Hero({ aboutData = [], contentVisible = false }) {
           <div className="contact-row">
             <SpecularButton
               as="a"
-              href={`mailto:${email}`}
+              href={emailHref}
+              target="_blank"
+              rel="noopener noreferrer"
               size="sm"
               radius={8}
               gradientColors={['#38bdf8', '#818cf8', '#c084fc']}
@@ -83,7 +90,7 @@ export default function Hero({ aboutData = [], contentVisible = false }) {
 
             <SpecularButton
               as="a"
-              href={`https://${github}`}
+              href={githubHref}
               target="_blank"
               rel="noopener noreferrer"
               size="sm"
@@ -97,7 +104,7 @@ export default function Hero({ aboutData = [], contentVisible = false }) {
 
             <SpecularButton
               as="a"
-              href={`https://${linkedin}`}
+              href={linkedinHref}
               target="_blank"
               rel="noopener noreferrer"
               size="sm"
@@ -234,6 +241,9 @@ export default function Hero({ aboutData = [], contentVisible = false }) {
           align-items: center;
           flex-wrap: wrap;
           gap: 0.75rem;
+          position: relative;
+          z-index: 30;
+          pointer-events: auto;
         }
         .hero-right-space {
           min-height: 520px;

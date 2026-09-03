@@ -297,7 +297,7 @@ export async function POST(req) {
     // Match Contact
     if (queryLower.includes('contact') || queryLower.includes('email') || queryLower.includes('hire') || queryLower.includes('reach') || queryLower.includes('linkedin')) {
       return NextResponse.json({
-        reply: `You can connect with Ayush Dey directly:\n\n• **Email:** [deyayush1029@gmail.com](mailto:deyayush1029@gmail.com)\n• **LinkedIn:** [linkedin.com/in/ayush--dey](https://linkedin.com/in/ayush--dey)\n• **GitHub:** [github.com/AyushDey1029](https://github.com/AyushDey1029)`,
+        reply: `You can connect with Ayush Dey directly:\n\n• **Email:** [deyayush1029@gmail.com](https://mail.google.com/mail/?view=cm&fs=1&to=deyayush1029@gmail.com)\n• **LinkedIn:** [linkedin.com/in/ayush--dey](https://linkedin.com/in/ayush--dey)\n• **GitHub:** [github.com/AyushDey1029](https://github.com/AyushDey1029)`,
         source: 'excel-rag'
       });
     }
