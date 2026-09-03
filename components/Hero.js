@@ -247,7 +247,7 @@ export default function Hero({ aboutData = [], contentVisible = false }) {
             grid-template-columns: 1fr;
           }
           .hero-left-content {
-            margin-top: 300px;
+            margin-top: 410px;
           }
           .hero-right-space {
             display: none;
