@@ -1,7 +1,6 @@
 'use client';
 import React, { useState, useRef, useEffect } from 'react';
 import { Bot, User, X, Send, CornerDownLeft } from 'lucide-react';
-import SpecularButton from './SpecularButton';
 
 export default function Chatbot({ isOpen, setIsOpen }) {
   const [messages, setMessages] = useState([
@@ -78,19 +77,17 @@ export default function Chatbot({ isOpen, setIsOpen }) {
 
   return (
     <>
-      {/* Specular Floating Toggle Pill */}
+      {/* Floating Toggle Pill */}
       <div className="assistant-pill-fixed">
-        <SpecularButton
-          size="sm"
-          radius={24}
-          gradientColors={['#38bdf8', '#818cf8', '#c084fc']}
+        <button
+          className="assistant-pill"
           onClick={() => setIsOpen(!isOpen)}
           aria-label="Toggle Portfolio Assistant"
         >
           <Bot size={16} />
           <span>Ask Resume Assistant</span>
           <span className="live-dot" />
-        </SpecularButton>
+        </button>
       </div>
 
       {/* Clean Drawer */}
@@ -138,19 +135,18 @@ export default function Chatbot({ isOpen, setIsOpen }) {
             <div ref={messagesEndRef} />
           </div>
 
-          {/* Quick Questions with Specular Buttons */}
+          {/* Quick Questions */}
           {messages.length < 3 && (
             <div className="prompts-bar">
               {quickPrompts.map((p, idx) => (
-                <SpecularButton
+                <button
                   key={idx}
-                  size="xs"
-                  radius={6}
-                  gradientColors={['#38bdf8', '#818cf8', '#c084fc']}
+                  type="button"
+                  className="prompt-btn"
                   onClick={() => handleSend(p)}
                 >
                   {p}
-                </SpecularButton>
+                </button>
               ))}
             </div>
           )}
@@ -170,16 +166,14 @@ export default function Chatbot({ isOpen, setIsOpen }) {
               onChange={(e) => setInput(e.target.value)}
               className="chat-field"
             />
-            <SpecularButton
+            <button
               type="submit"
-              size="xs"
-              radius={6}
-              gradientColors={['#38bdf8', '#818cf8', '#c084fc']}
+              className="send-button"
               disabled={loading || !input.trim()}
               aria-label="Submit"
             >
               <CornerDownLeft size={16} />
-            </SpecularButton>
+            </button>
           </form>
         </div>
       )}
@@ -192,27 +186,25 @@ export default function Chatbot({ isOpen, setIsOpen }) {
           z-index: 999;
         }
         .assistant-pill {
-          position: fixed;
-          bottom: 1.75rem;
-          right: 1.75rem;
-          z-index: 999;
           display: flex;
           align-items: center;
           gap: 0.55rem;
-          background: #11141a;
-          border: 1px solid var(--border-strong);
+          background: rgba(17, 20, 26, 0.95);
+          backdrop-filter: blur(12px);
+          -webkit-backdrop-filter: blur(12px);
+          border: 1px solid rgba(56, 189, 248, 0.35);
           color: var(--text-primary);
-          padding: 0.6rem 1.1rem;
+          padding: 0.6rem 1.15rem;
           border-radius: 9999px;
           font-size: 0.85rem;
           font-weight: 500;
           cursor: pointer;
-          box-shadow: 0 8px 24px rgba(0, 0, 0, 0.5);
+          box-shadow: 0 8px 24px rgba(0, 0, 0, 0.5), 0 0 14px rgba(56, 189, 248, 0.15);
           transition: all 0.2s ease;
         }
         .assistant-pill:hover {
-          border-color: var(--border-active);
-          background: #161b22;
+          border-color: rgba(129, 140, 248, 0.7);
+          box-shadow: 0 8px 28px rgba(0, 0, 0, 0.6), 0 0 20px rgba(56, 189, 248, 0.3);
           transform: translateY(-2px);
         }
         .live-dot {
@@ -331,17 +323,19 @@ export default function Chatbot({ isOpen, setIsOpen }) {
         }
         .prompt-btn {
           font-size: 0.75rem;
-          padding: 0.25rem 0.6rem;
-          background: var(--surface-1);
-          border: 1px solid var(--border-subtle);
-          border-radius: 4px;
+          padding: 0.35rem 0.75rem;
+          background: rgba(22, 27, 34, 0.9);
+          border: 1px solid rgba(255, 255, 255, 0.1);
+          border-radius: 6px;
           color: var(--text-secondary);
           cursor: pointer;
           transition: all 0.15s ease;
         }
         .prompt-btn:hover {
           color: #fff;
-          border-color: var(--border-strong);
+          border-color: rgba(56, 189, 248, 0.5);
+          background: rgba(30, 41, 59, 0.9);
+          transform: translateY(-1px);
         }
         .input-row {
           display: flex;
@@ -366,12 +360,12 @@ export default function Chatbot({ isOpen, setIsOpen }) {
           border-color: var(--border-strong);
         }
         .send-button {
-          background: var(--surface-2);
-          border: 1px solid var(--border-subtle);
+          background: linear-gradient(135deg, #38bdf8, #818cf8);
+          border: none;
           border-radius: 6px;
-          color: var(--text-primary);
-          width: 32px;
-          height: 32px;
+          color: #fff;
+          width: 34px;
+          height: 34px;
           display: flex;
           align-items: center;
           justify-content: center;
@@ -379,12 +373,13 @@ export default function Chatbot({ isOpen, setIsOpen }) {
           transition: all 0.15s ease;
         }
         .send-button:hover:not(:disabled) {
-          background: var(--surface-elevated);
-          border-color: var(--border-strong);
+          filter: brightness(1.15);
+          transform: scale(1.04);
         }
         .send-button:disabled {
           opacity: 0.4;
           cursor: not-allowed;
+          filter: grayscale(1);
         }
       `}</style>
     </>

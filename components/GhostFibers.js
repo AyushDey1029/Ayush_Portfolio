@@ -307,6 +307,18 @@ const GhostFibers = ({
       { threshold: 0 }
     );
     intersectionObserver.observe(container);
+
+    const handleContextLost = e => {
+      e.preventDefault();
+      stop();
+    };
+    const handleContextRestored = () => {
+      setSize();
+      start();
+    };
+    canvas.addEventListener('webglcontextlost', handleContextLost, false);
+    canvas.addEventListener('webglcontextrestored', handleContextRestored, false);
+
     document.addEventListener('visibilitychange', handleVisibility);
     reducedMotion.addEventListener('change', handleReducedMotion);
 
@@ -333,6 +345,8 @@ const GhostFibers = ({
 
     return () => {
       stop();
+      canvas.removeEventListener('webglcontextlost', handleContextLost);
+      canvas.removeEventListener('webglcontextrestored', handleContextRestored);
       resizeObserver.disconnect();
       intersectionObserver.disconnect();
       document.removeEventListener('visibilitychange', handleVisibility);
