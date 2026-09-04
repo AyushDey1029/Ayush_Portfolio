@@ -1,19 +1,38 @@
 'use client';
-import React, { useState } from 'react';
-import { Bot, Menu, X } from 'lucide-react';
+import React, { useState, useEffect } from 'react';
+import { Bot } from 'lucide-react';
 import SpecularButton from './SpecularButton';
+import PillNav from './PillNav';
 
 export default function Navbar({ onOpenChat }) {
-  const [isOpen, setIsOpen] = useState(false);
+  const [activeSection, setActiveSection] = useState('#about');
 
   const navLinks = [
-    { name: 'About', href: '#about' },
-    { name: 'Skills', href: '#skills' },
-    { name: 'Projects', href: '#projects' },
-    { name: 'Training', href: '#training' },
-    { name: 'Certifications', href: '#certifications' },
-    { name: 'Education', href: '#education' },
+    { label: 'About', href: '#about' },
+    { label: 'Skills', href: '#skills' },
+    { label: 'Projects', href: '#projects' },
+    { label: 'Training', href: '#training' },
+    { label: 'Certifications', href: '#certifications' },
+    { label: 'Education', href: '#education' },
   ];
+
+  useEffect(() => {
+    const handleScroll = () => {
+      const sections = ['education', 'certifications', 'training', 'projects', 'skills', 'about'];
+      const scrollPos = window.scrollY + 220;
+
+      for (const sectionId of sections) {
+        const el = document.getElementById(sectionId);
+        if (el && el.offsetTop <= scrollPos) {
+          setActiveSection(`#${sectionId}`);
+          break;
+        }
+      }
+    };
+
+    window.addEventListener('scroll', handleScroll, { passive: true });
+    return () => window.removeEventListener('scroll', handleScroll);
+  }, []);
 
   return (
     <header className="nav-header">
@@ -23,16 +42,24 @@ export default function Navbar({ onOpenChat }) {
           <span className="brand-role">Software Engineer</span>
         </a>
 
-        {/* Desktop Links */}
-        <nav className="desktop-nav">
-          <div className="nav-links">
-            {navLinks.map((link) => (
-              <a key={link.name} href={link.href} className="nav-anchor">
-                {link.name}
-              </a>
-            ))}
-          </div>
+        {/* Center Pill Navigation */}
+        <div className="nav-center">
+          <PillNav
+            logo="/icon.png"
+            logoAlt="AD"
+            items={navLinks}
+            activeHref={activeSection}
+            baseColor="rgba(17, 20, 26, 0.85)"
+            pillColor="rgba(255, 255, 255, 0.04)"
+            hoveredPillTextColor="#ffffff"
+            pillTextColor="#94a3b8"
+            hoverCircleColor="#2563eb"
+            initialLoadAnimation={false}
+          />
+        </div>
 
+        {/* Right Action: AI Copilot */}
+        <div className="nav-actions">
           <SpecularButton
             size="sm"
             radius={8}
@@ -41,64 +68,36 @@ export default function Navbar({ onOpenChat }) {
             aria-label="Open AI Copilot"
           >
             <Bot size={15} />
-            <span>AI Copilot</span>
+            <span className="copilot-text">AI Copilot</span>
           </SpecularButton>
-        </nav>
-
-        {/* Mobile controls */}
-        <div className="mobile-actions">
-          <SpecularButton
-            size="xs"
-            radius={8}
-            gradientColors={['#38bdf8', '#818cf8', '#c084fc']}
-            onClick={onOpenChat}
-            aria-label="Open AI Copilot"
-          >
-            <Bot size={15} />
-          </SpecularButton>
-          <button onClick={() => setIsOpen(!isOpen)} className="menu-btn" aria-label="Toggle menu">
-            {isOpen ? <X size={20} /> : <Menu size={20} />}
-          </button>
         </div>
       </div>
-
-      {isOpen && (
-        <div className="mobile-drawer">
-          {navLinks.map((link) => (
-            <a
-              key={link.name}
-              href={link.href}
-              className="mobile-link"
-              onClick={() => setIsOpen(false)}
-            >
-              {link.name}
-            </a>
-          ))}
-        </div>
-      )}
 
       <style jsx>{`
         .nav-header {
           position: relative;
           width: 100%;
           z-index: 100;
-          background: rgba(9, 10, 13, 0.94);
+          background: rgba(9, 10, 13, 0.92);
           backdrop-filter: blur(16px);
           -webkit-backdrop-filter: blur(16px);
           border-bottom: 1px solid var(--border-subtle);
         }
         .nav-container {
-          max-width: 1080px;
+          max-width: 1120px;
           margin: 0 auto;
-          padding: 0.9rem 1.75rem;
+          padding: 0.65rem 1.75rem;
           display: flex;
           justify-content: space-between;
           align-items: center;
+          gap: 1rem;
         }
         .brand {
           display: flex;
           align-items: baseline;
-          gap: 0.6rem;
+          gap: 0.5rem;
+          flex-shrink: 0;
+          text-decoration: none;
         }
         .brand-name {
           font-weight: 700;
@@ -111,55 +110,32 @@ export default function Navbar({ onOpenChat }) {
           font-size: 0.75rem;
           color: var(--text-muted);
         }
-        .desktop-nav {
+        .nav-center {
+          display: flex;
+          justify-content: center;
+          flex: 1;
+        }
+        .nav-actions {
           display: flex;
           align-items: center;
-          gap: 1.75rem;
+          flex-shrink: 0;
         }
-        .nav-links {
-          display: flex;
-          gap: 1.5rem;
-        }
-        .nav-anchor {
-          color: var(--text-secondary);
-          font-size: 0.88rem;
-          font-weight: 450;
-          transition: color 0.15s ease;
-        }
-        .nav-anchor:hover {
-          color: #fff;
-        }
-        .mobile-actions {
-          display: none;
-        }
-        .menu-btn {
-          background: none;
-          border: none;
-          color: var(--text-primary);
-          display: flex;
-          align-items: center;
-          cursor: pointer;
-        }
-        .mobile-drawer {
-          display: flex;
-          flex-direction: column;
-          padding: 1rem 1.75rem 1.5rem;
-          border-top: 1px solid var(--border-subtle);
-          background: var(--bg-color);
-          gap: 0.85rem;
-        }
-        .mobile-link {
-          color: var(--text-secondary);
-          font-size: 0.95rem;
-        }
-        @media (max-width: 768px) {
-          .desktop-nav {
+
+        @media (max-width: 960px) {
+          .brand-role {
             display: none;
           }
-          .mobile-actions {
-            display: flex;
-            align-items: center;
-            gap: 0.75rem;
+        }
+
+        @media (max-width: 768px) {
+          .nav-container {
+            padding: 0.6rem 1rem;
+          }
+          .nav-center {
+            justify-content: flex-end;
+          }
+          .copilot-text {
+            display: none;
           }
         }
       `}</style>
