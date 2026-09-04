@@ -1,6 +1,6 @@
 'use client';
 import React, { useState, useEffect } from 'react';
-import { Bot } from 'lucide-react';
+import { FileText, ArrowUpRight } from 'lucide-react';
 import SpecularButton from './SpecularButton';
 import PillNav from './PillNav';
 
@@ -58,17 +58,22 @@ export default function Navbar({ onOpenChat }) {
           />
         </div>
 
-        {/* Right Action: AI Copilot */}
+        {/* Right Action: Resume */}
         <div className="nav-actions">
           <SpecularButton
+            as="a"
+            href="/assets/Ayush_Dey_Resume.pdf"
+            target="_blank"
+            rel="noopener noreferrer"
             size="sm"
             radius={8}
             gradientColors={['#38bdf8', '#818cf8', '#c084fc']}
-            onClick={onOpenChat}
-            aria-label="Open AI Copilot"
+            aria-label="View and Download Resume"
+            title="View & Download Resume (PDF)"
           >
-            <Bot size={15} />
-            <span className="copilot-text">AI Copilot</span>
+            <FileText size={15} />
+            <span className="resume-text">Resume</span>
+            <ArrowUpRight size={12} />
           </SpecularButton>
         </div>
       </div>
@@ -134,7 +139,7 @@ export default function Navbar({ onOpenChat }) {
           .nav-center {
             justify-content: flex-end;
           }
-          .copilot-text {
+          .resume-text {
             display: none;
           }
         }
