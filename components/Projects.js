@@ -15,12 +15,33 @@ export default function Projects({ projectsData = [] }) {
       </div>
 
       <div className="projects-grid">
-        {projectsData.map((project, idx) => (
-          <BorderGlow
-            key={idx}
-            borderRadius={12}
-            backgroundColor="#11141a"
-            colors={['#38bdf8', '#818cf8', '#c084fc']}
+        {projectsData.map((project, idx) => {
+          const liveUrl =
+            project.LiveLink ||
+            (project.Title?.toLowerCase().includes('fundconnect')
+              ? 'https://fund-connect-ai-ux96.vercel.app/'
+              : project.Title?.toLowerCase().includes('vernacular')
+              ? 'https://vernacular-fd-advisor-revised-1029.vercel.app/'
+              : null);
+
+          const githubUrl =
+            (project.GithubLink && !project.GithubLink.endsWith('AyushDey1029')
+              ? project.GithubLink
+              : null) ||
+            (project.Title?.toLowerCase().includes('fundconnect')
+              ? 'https://github.com/AyushDey1029/FundConnect_AI'
+              : project.Title?.toLowerCase().includes('vernacular')
+              ? 'https://github.com/AyushDey1029/vernacular_fd_advisor_revised_1029'
+              : project.Title?.toLowerCase().includes('iot') || project.Title?.toLowerCase().includes('sensor') || project.Title?.toLowerCase().includes('autoencoder')
+              ? 'https://github.com/AyushDey1029/iot-sensor-data-compression-autoencoder'
+              : project.GithubLink);
+
+          return (
+            <BorderGlow
+              key={idx}
+              borderRadius={12}
+              backgroundColor="#11141a"
+              colors={['#38bdf8', '#818cf8', '#c084fc']}
             edgeSensitivity={30}
             glowRadius={35}
             glowIntensity={0.9}
@@ -38,10 +59,10 @@ export default function Projects({ projectsData = [] }) {
                 </div>
 
                 <div className="project-links">
-                  {project.GithubLink && (
+                  {githubUrl && (
                     <SpecularButton
                       as="a"
-                      href={project.GithubLink}
+                      href={githubUrl}
                       target="_blank"
                       rel="noopener noreferrer"
                       size="xs"
@@ -54,19 +75,20 @@ export default function Projects({ projectsData = [] }) {
                       <ArrowUpRight size={12} />
                     </SpecularButton>
                   )}
-                  {project.LiveLink && (
+                  {liveUrl && (
                     <SpecularButton
                       as="a"
-                      href={project.LiveLink}
+                      href={liveUrl}
                       target="_blank"
                       rel="noopener noreferrer"
                       size="xs"
                       radius={6}
                       gradientColors={['#38bdf8', '#818cf8', '#c084fc']}
-                      aria-label="View Live Project"
+                      aria-label={`View Live Demo for ${project.Title}`}
                     >
-                      <ExternalLink size={14} />
+                      <ExternalLink size={13} />
                       <span>Live</span>
+                      <ArrowUpRight size={12} />
                     </SpecularButton>
                   )}
                 </div>
@@ -104,7 +126,8 @@ export default function Projects({ projectsData = [] }) {
               </div>
             </article>
           </BorderGlow>
-        ))}
+          );
+        })}
       </div>
 
       <style jsx>{`
@@ -147,7 +170,9 @@ export default function Projects({ projectsData = [] }) {
         }
         .project-links {
           display: flex;
+          align-items: center;
           gap: 0.6rem;
+          flex-wrap: wrap;
         }
         .icon-link {
           display: inline-flex;
