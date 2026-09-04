@@ -1,5 +1,6 @@
 import React from 'react';
-import BorderGlow from './BorderGlow';
+import SpotlightCard from './SpotlightCard';
+import TechIcon from './TechIcon';
 
 export default function Skills({ skillsData = [] }) {
   if (!skillsData || skillsData.length === 0) return null;
@@ -13,28 +14,24 @@ export default function Skills({ skillsData = [] }) {
 
       <div className="skills-grid">
         {skillsData.map((category, idx) => (
-          <BorderGlow
+          <SpotlightCard
             key={idx}
-            borderRadius={10}
-            backgroundColor="#11141a"
-            glowColor="215 80 60"
-            colors={['#38bdf8', '#818cf8', '#c084fc']}
-            edgeSensitivity={30}
-            glowRadius={28}
-            glowIntensity={0.8}
-            coneSpread={25}
+            borderRadius={14}
+            spotlightColor="rgba(56, 189, 248, 0.16)"
+            className="skill-card-item"
           >
             <div className="skill-block-content">
               <h3 className="skill-cat-title">{category.Category}</h3>
               <div className="tags-container">
                 {(category.ItemsList || []).map((skill, sIdx) => (
                   <span key={sIdx} className="skill-pill">
-                    {skill}
+                    <TechIcon name={skill} size={13} />
+                    <span>{skill}</span>
                   </span>
                 ))}
               </div>
             </div>
-          </BorderGlow>
+          </SpotlightCard>
         ))}
       </div>
 
@@ -45,7 +42,7 @@ export default function Skills({ skillsData = [] }) {
           gap: 1.5rem;
         }
         .skill-block-content {
-          padding: 1.5rem;
+          padding: 1.65rem;
           width: 100%;
         }
         .skill-cat-title {
@@ -57,22 +54,26 @@ export default function Skills({ skillsData = [] }) {
         .tags-container {
           display: flex;
           flex-wrap: wrap;
-          gap: 0.45rem;
+          gap: 0.5rem;
         }
         .skill-pill {
+          display: inline-flex;
+          align-items: center;
+          gap: 0.45rem;
           font-family: var(--font-mono);
           font-size: 0.78rem;
-          padding: 0.25rem 0.65rem;
-          background: var(--surface-2);
-          border: 1px solid var(--border-subtle);
-          border-radius: 6px;
+          padding: 0.32rem 0.7rem;
+          background: rgba(255, 255, 255, 0.04);
+          border: 1px solid rgba(255, 255, 255, 0.08);
+          border-radius: 8px;
           color: var(--text-secondary);
-          transition: all 0.15s ease;
+          transition: all 0.2s ease;
         }
         .skill-pill:hover {
           color: #fff;
-          border-color: var(--border-active);
-          background: var(--surface-elevated);
+          border-color: rgba(56, 189, 248, 0.4);
+          background: rgba(56, 189, 248, 0.08);
+          transform: translateY(-1px);
         }
       `}</style>
     </div>

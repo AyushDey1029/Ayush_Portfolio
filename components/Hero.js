@@ -3,6 +3,7 @@ import { Mail, ArrowUpRight } from 'lucide-react';
 import { Github, Linkedin } from './Icons';
 import SpecularButton from './SpecularButton';
 import FadeContent from './FadeContent';
+import CountUp from './CountUp';
 
 export default function Hero({ aboutData = [], contentVisible = false }) {
   const introTexts = aboutData.filter(item => item.Category === 'Narrative').map(i => i.Value);
@@ -78,7 +79,9 @@ export default function Hero({ aboutData = [], contentVisible = false }) {
             <div className="academic-divider" />
             <div className="academic-item">
               <span className="academic-label">Academic Standing</span>
-              <span className="academic-value highlight-val">CGPA: {gpa}</span>
+              <span className="academic-value highlight-val">
+                CGPA: <CountUp to={parseFloat(gpa) || 8.4} decimals={1} duration={1.6} delay={0.3} startWhen={contentVisible} />
+              </span>
             </div>
           </div>
 

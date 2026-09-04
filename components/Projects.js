@@ -1,7 +1,8 @@
 import React from 'react';
 import { ExternalLink, ArrowUpRight } from 'lucide-react';
 import { Github } from './Icons';
-import BorderGlow from './BorderGlow';
+import TiltedCard from './TiltedCard';
+import TechIcon from './TechIcon';
 import SpecularButton from './SpecularButton';
 
 export default function Projects({ projectsData = [] }) {
@@ -37,95 +38,94 @@ export default function Projects({ projectsData = [] }) {
               : project.GithubLink);
 
           return (
-            <BorderGlow
+            <TiltedCard
               key={idx}
-              borderRadius={12}
-              backgroundColor="#11141a"
-              colors={['#38bdf8', '#818cf8', '#c084fc']}
-            edgeSensitivity={30}
-            glowRadius={35}
-            glowIntensity={0.9}
-            coneSpread={25}
-          >
-            <article className="project-card-content">
-              {/* Top Bar */}
-              <div className="project-top">
-                <div>
-                  <div className="title-row">
-                    <h3 className="project-name">{project.Title}</h3>
-                    <span className="project-date">{project.Duration}</span>
+              maxTilt={7}
+              scale={1.01}
+              borderRadius={16}
+              glare={true}
+              className="project-tilted-item"
+            >
+              <article className="project-card-content">
+                {/* Top Bar */}
+                <div className="project-top">
+                  <div>
+                    <div className="title-row">
+                      <h3 className="project-name">{project.Title}</h3>
+                      <span className="project-date">{project.Duration}</span>
+                    </div>
+                    <p className="project-subtitle">{project.Subtitle}</p>
                   </div>
-                  <p className="project-subtitle">{project.Subtitle}</p>
+
+                  <div className="project-links">
+                    {githubUrl && (
+                      <SpecularButton
+                        as="a"
+                        href={githubUrl}
+                        target="_blank"
+                        rel="noopener noreferrer"
+                        size="xs"
+                        radius={6}
+                        gradientColors={['#38bdf8', '#818cf8', '#c084fc']}
+                        aria-label="View Source Code"
+                      >
+                        <Github size={14} />
+                        <span>Source</span>
+                        <ArrowUpRight size={12} />
+                      </SpecularButton>
+                    )}
+                    {liveUrl && (
+                      <SpecularButton
+                        as="a"
+                        href={liveUrl}
+                        target="_blank"
+                        rel="noopener noreferrer"
+                        size="xs"
+                        radius={6}
+                        gradientColors={['#38bdf8', '#818cf8', '#c084fc']}
+                        aria-label={`View Live Demo for ${project.Title}`}
+                      >
+                        <ExternalLink size={13} />
+                        <span>Live</span>
+                        <ArrowUpRight size={12} />
+                      </SpecularButton>
+                    )}
+                  </div>
                 </div>
 
-                <div className="project-links">
-                  {githubUrl && (
-                    <SpecularButton
-                      as="a"
-                      href={githubUrl}
-                      target="_blank"
-                      rel="noopener noreferrer"
-                      size="xs"
-                      radius={6}
-                      gradientColors={['#38bdf8', '#818cf8', '#c084fc']}
-                      aria-label="View Source Code"
-                    >
-                      <Github size={14} />
-                      <span>Source</span>
-                      <ArrowUpRight size={12} />
-                    </SpecularButton>
-                  )}
-                  {liveUrl && (
-                    <SpecularButton
-                      as="a"
-                      href={liveUrl}
-                      target="_blank"
-                      rel="noopener noreferrer"
-                      size="xs"
-                      radius={6}
-                      gradientColors={['#38bdf8', '#818cf8', '#c084fc']}
-                      aria-label={`View Live Demo for ${project.Title}`}
-                    >
-                      <ExternalLink size={13} />
-                      <span>Live</span>
-                      <ArrowUpRight size={12} />
-                    </SpecularButton>
-                  )}
-                </div>
-              </div>
+                {/* Bullets */}
+                {project.ParsedDescription?.description?.length > 0 && (
+                  <ul className="details-list">
+                    {project.ParsedDescription.description.map((point, pIdx) => (
+                      <li key={pIdx} className="detail-item">
+                        <span className="bullet">—</span>
+                        <span>{point}</span>
+                      </li>
+                    ))}
+                  </ul>
+                )}
 
-              {/* Bullets */}
-              {project.ParsedDescription?.description?.length > 0 && (
-                <ul className="details-list">
-                  {project.ParsedDescription.description.map((point, pIdx) => (
-                    <li key={pIdx} className="detail-item">
-                      <span className="bullet">—</span>
-                      <span>{point}</span>
-                    </li>
+                {/* Learnings */}
+                {project.ParsedDescription?.learning?.length > 0 && (
+                  <div className="learning-box">
+                    <span className="learning-label">Technical Takeaways:</span>
+                    <span className="learning-content">
+                      {project.ParsedDescription.learning.join(' • ')}
+                    </span>
+                  </div>
+                )}
+
+                {/* Tech Stack */}
+                <div className="stack-wrap">
+                  {(project.Stack || []).map((tech, tIdx) => (
+                    <span key={tIdx} className="mono-tag">
+                      <TechIcon name={tech} size={13} />
+                      <span>{tech}</span>
+                    </span>
                   ))}
-                </ul>
-              )}
-
-              {/* Learnings */}
-              {project.ParsedDescription?.learning?.length > 0 && (
-                <div className="learning-box">
-                  <span className="learning-label">Technical Takeaways:</span>
-                  <span className="learning-content">
-                    {project.ParsedDescription.learning.join(' • ')}
-                  </span>
                 </div>
-              )}
-
-              {/* Tech Stack */}
-              <div className="stack-wrap">
-                {(project.Stack || []).map((tech, tIdx) => (
-                  <span key={tIdx} className="mono-tag">
-                    {tech}
-                  </span>
-                ))}
-              </div>
-            </article>
-          </BorderGlow>
+              </article>
+            </TiltedCard>
           );
         })}
       </div>
@@ -228,7 +228,26 @@ export default function Projects({ projectsData = [] }) {
         .stack-wrap {
           display: flex;
           flex-wrap: wrap;
+          gap: 0.5rem;
+        }
+        .mono-tag {
+          display: inline-flex;
+          align-items: center;
           gap: 0.45rem;
+          font-family: var(--font-mono);
+          font-size: 0.78rem;
+          padding: 0.3rem 0.68rem;
+          background: rgba(255, 255, 255, 0.04);
+          border: 1px solid rgba(255, 255, 255, 0.08);
+          border-radius: 7px;
+          color: var(--text-secondary);
+          transition: all 0.2s ease;
+        }
+        .mono-tag:hover {
+          color: #fff;
+          border-color: rgba(56, 189, 248, 0.4);
+          background: rgba(56, 189, 248, 0.08);
+          transform: translateY(-1px);
         }
       `}</style>
     </div>

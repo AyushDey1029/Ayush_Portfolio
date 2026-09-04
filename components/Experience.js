@@ -1,5 +1,6 @@
 import React from 'react';
-import BorderGlow from './BorderGlow';
+import SpotlightCard from './SpotlightCard';
+import TechIcon from './TechIcon';
 
 export default function Experience({ experienceData = [] }) {
   const hasExperience = experienceData && experienceData.length > 0;
@@ -14,15 +15,11 @@ export default function Experience({ experienceData = [] }) {
       {hasExperience ? (
         <div className="exp-list">
           {experienceData.map((exp, idx) => (
-            <BorderGlow
+            <SpotlightCard
               key={idx}
-              borderRadius={12}
-              backgroundColor="#11141a"
-              glowColor="215 80 60"
-              colors={['#38bdf8', '#818cf8', '#c084fc']}
-              edgeSensitivity={30}
-              glowRadius={30}
-              glowIntensity={0.8}
+              borderRadius={14}
+              spotlightColor="rgba(56, 189, 248, 0.16)"
+              className="exp-item-card"
             >
               <div className="exp-item-content">
                 <div className="exp-top">
@@ -34,19 +31,14 @@ export default function Experience({ experienceData = [] }) {
                 </div>
                 {exp.Details && <p className="exp-details">{exp.Details}</p>}
               </div>
-            </BorderGlow>
+            </SpotlightCard>
           ))}
         </div>
       ) : (
-        <BorderGlow
-          borderRadius={12}
-          backgroundColor="#11141a"
-          glowColor="215 80 60"
-          colors={['#38bdf8', '#818cf8', '#c084fc']}
-          edgeSensitivity={30}
-          glowRadius={35}
-          glowIntensity={0.85}
-          coneSpread={25}
+        <SpotlightCard
+          borderRadius={16}
+          spotlightColor="rgba(56, 189, 248, 0.18)"
+          className="open-roles-card"
         >
           <div className="open-box-content">
             <div className="open-header">
@@ -60,12 +52,21 @@ export default function Experience({ experienceData = [] }) {
               Equipped with end-to-end production experience architecting crowdfunding platforms with automated LLM trust scoring, building multilingual NLP advisory pipelines, and training deep autoencoders in PyTorch. Actively seeking software engineering and AI/ML internships and full-time opportunities.
             </p>
             <div className="focus-pills">
-              <span className="mono-tag">Full-Stack Development (React, Node.js, Express, MongoDB)</span>
-              <span className="mono-tag">Machine Learning & Deep Learning (PyTorch, OpenCV)</span>
-              <span className="mono-tag">Generative AI & LLM Systems</span>
+              <span className="mono-tag">
+                <TechIcon name="React" size={13} />
+                <span>Full-Stack Development (React, Node.js, Express, MongoDB)</span>
+              </span>
+              <span className="mono-tag">
+                <TechIcon name="PyTorch" size={13} />
+                <span>Machine Learning & Deep Learning (PyTorch, OpenCV)</span>
+              </span>
+              <span className="mono-tag">
+                <TechIcon name="OpenAI" size={13} />
+                <span>Generative AI & LLM Systems</span>
+              </span>
             </div>
           </div>
-        </BorderGlow>
+        </SpotlightCard>
       )}
 
       <style jsx>{`
@@ -127,6 +128,25 @@ export default function Experience({ experienceData = [] }) {
           display: flex;
           flex-wrap: wrap;
           gap: 0.5rem;
+        }
+        .mono-tag {
+          display: inline-flex;
+          align-items: center;
+          gap: 0.45rem;
+          font-family: var(--font-mono);
+          font-size: 0.8rem;
+          padding: 0.35rem 0.75rem;
+          background: rgba(255, 255, 255, 0.04);
+          border: 1px solid rgba(255, 255, 255, 0.08);
+          border-radius: 8px;
+          color: var(--text-secondary);
+          transition: all 0.2s ease;
+        }
+        .mono-tag:hover {
+          color: #fff;
+          border-color: rgba(56, 189, 248, 0.4);
+          background: rgba(56, 189, 248, 0.08);
+          transform: translateY(-1px);
         }
       `}</style>
     </div>

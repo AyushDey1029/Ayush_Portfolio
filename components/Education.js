@@ -1,5 +1,6 @@
 import React from 'react';
-import BorderGlow from './BorderGlow';
+import SpotlightCard from './SpotlightCard';
+import CountUp from './CountUp';
 
 export default function Education({ educationData = [] }) {
   if (!educationData || educationData.length === 0) return null;
@@ -13,16 +14,11 @@ export default function Education({ educationData = [] }) {
 
       <div className="education-list">
         {educationData.map((edu, idx) => (
-          <BorderGlow
+          <SpotlightCard
             key={idx}
-            borderRadius={12}
-            backgroundColor="#11141a"
-            glowColor="215 80 60"
-            colors={['#38bdf8', '#818cf8', '#c084fc']}
-            edgeSensitivity={30}
-            glowRadius={32}
-            glowIntensity={0.85}
-            coneSpread={25}
+            borderRadius={14}
+            spotlightColor="rgba(56, 189, 248, 0.16)"
+            className="edu-card-item"
           >
             <div className="edu-card-content">
               <div className="edu-top">
@@ -37,7 +33,9 @@ export default function Education({ educationData = [] }) {
                 <div className="edu-meta">
                   <span className="edu-duration">{edu.Duration}</span>
                   {edu.GPA && (
-                    <span className="gpa-tag">CGPA: {edu.GPA}</span>
+                    <span className="gpa-tag">
+                      CGPA: <CountUp to={parseFloat(edu.GPA) || 8.4} decimals={1} duration={1.6} />
+                    </span>
                   )}
                 </div>
               </div>
@@ -68,7 +66,7 @@ export default function Education({ educationData = [] }) {
                 </div>
               )}
             </div>
-          </BorderGlow>
+          </SpotlightCard>
         ))}
       </div>
 
