@@ -140,7 +140,9 @@ export default function PortfolioClient({ data }) {
       </main>
       </div>
 
-      <Chatbot isOpen={isChatOpen} setIsOpen={setIsChatOpen} />
+      {contentVisible && (
+        <Chatbot isOpen={isChatOpen} setIsOpen={setIsChatOpen} contentVisible={contentVisible} />
+      )}
     </>
   );
 }

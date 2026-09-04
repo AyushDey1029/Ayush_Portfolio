@@ -33,13 +33,25 @@ const FadeContent = ({
   useEffect(() => {
     const el = ref.current;
     if (!el) return;
-    if (triggerWhen === false) return;
 
     // Check prefers-reduced-motion
     const prefersReduced = window.matchMedia?.('(prefers-reduced-motion: reduce)')?.matches;
     if (prefersReduced) {
-      gsap.set(el, { clipPath: 'none', autoAlpha: 1, filter: 'none' });
+      gsap.set(el, { clipPath: 'none', autoAlpha: 1, filter: 'none', visibility: 'visible' });
       if (el.children) gsap.set(el.children, { autoAlpha: 1, x: 0, filter: 'none' });
+      return;
+    }
+
+    if (triggerWhen === false) {
+      // Keep hidden while triggerWhen is false
+      gsap.set(el, {
+        clipPath: direction === 'left-to-right' ? 'polygon(0% 0%, 0% 0%, 0% 100%, 0% 100%)' : 'none',
+        autoAlpha: initialOpacity,
+        visibility: 'hidden'
+      });
+      if (el.children && el.children.length > 0) {
+        gsap.set(el.children, { autoAlpha: initialOpacity, x: -24 });
+      }
       return;
     }
 
@@ -53,6 +65,9 @@ const FadeContent = ({
 
     const isMobile = window.innerWidth < 960;
     const childElements = el.children;
+
+    // Reveal container visibility safely before animating
+    gsap.set(el, { visibility: 'visible' });
 
     // Master entrance timeline
     const tl = gsap.timeline({
@@ -77,11 +92,11 @@ const FadeContent = ({
 
     if (direction === 'left-to-right' && !isMobile) {
       // 1. Hardware-accelerated clipPath sweep from left to right matching the sliding card
-      gsap.set(el, {
+      tl.set(el, {
         clipPath: 'polygon(0% 0%, 0% 0%, 0% 100%, 0% 100%)',
         autoAlpha: 1,
         willChange: 'clip-path, transform, opacity'
-      });
+      }, 0);
 
       tl.to(el, {
         clipPath: 'polygon(0% 0%, 105% 0%, 105% 100%, 0% 100%)',
@@ -91,12 +106,12 @@ const FadeContent = ({
 
       // 2. Stagger each child element: float in from left with blur dissolving into sharpness
       if (childElements && childElements.length > 0) {
-        gsap.set(childElements, {
+        tl.set(childElements, {
           autoAlpha: initialOpacity,
           x: -24,
           filter: blur ? 'blur(8px)' : 'none',
           willChange: 'transform, opacity, filter'
-        });
+        }, 0);
 
         tl.to(childElements, {
           autoAlpha: 1,
@@ -109,18 +124,18 @@ const FadeContent = ({
       }
     } else {
       // Standard smooth fade (or mobile layout)
-      gsap.set(el, {
+      tl.set(el, {
         autoAlpha: initialOpacity,
         filter: blur ? 'blur(10px)' : 'blur(0px)',
         willChange: 'opacity, filter, transform'
-      });
+      }, 0);
 
       if (childElements && childElements.length > 0) {
-        gsap.set(childElements, {
+        tl.set(childElements, {
           autoAlpha: initialOpacity,
           y: 16,
           filter: blur ? 'blur(6px)' : 'none'
-        });
+        }, 0);
 
         tl.to(el, {
           autoAlpha: 1,
@@ -187,8 +202,22 @@ const FadeContent = ({
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [triggerWhen, fadeOutOnScroll, direction]);
 
+  const isHiddenInitially = triggerWhen === false;
+  const initialStyles = isHiddenInitially
+    ? {
+        clipPath: direction === 'left-to-right' ? 'polygon(0% 0%, 0% 0%, 0% 100%, 0% 100%)' : undefined,
+        opacity: initialOpacity,
+        visibility: 'hidden'
+      }
+    : {};
+
   return (
-    <div ref={ref} className={`fade-content-wrap ${className}`.trim()} style={style} {...props}>
+    <div
+      ref={ref}
+      className={`fade-content-wrap ${className}`.trim()}
+      style={{ ...initialStyles, ...style }}
+      {...props}
+    >
       {children}
     </div>
   );

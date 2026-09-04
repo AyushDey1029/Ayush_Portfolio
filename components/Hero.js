@@ -153,17 +153,17 @@ export default function Hero({ aboutData = [], contentVisible = false }) {
           position: relative;
           z-index: 20;
           pointer-events: auto;
-        }
-        .hero-right-space {
-          pointer-events: none;
+          transition: opacity 0.8s cubic-bezier(0.16, 1, 0.3, 1), transform 0.8s cubic-bezier(0.16, 1, 0.3, 1);
         }
         .hero-left-content.pre-pop {
           opacity: 0;
           pointer-events: none;
+          transform: translateY(14px);
         }
         .hero-left-content.popping-out {
           opacity: 1;
           pointer-events: auto;
+          transform: translateY(0);
         }
 
         .status-container {

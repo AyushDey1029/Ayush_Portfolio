@@ -82,7 +82,9 @@ function FormattedMessage({ text }) {
   );
 }
 
-export default function Chatbot({ isOpen, setIsOpen }) {
+export default function Chatbot({ isOpen, setIsOpen, contentVisible = false }) {
+  if (!contentVisible) return null;
+
   const [messages, setMessages] = useState([
     {
       role: 'assistant',
@@ -94,10 +96,9 @@ export default function Chatbot({ isOpen, setIsOpen }) {
   const messagesEndRef = useRef(null);
 
   const quickPrompts = [
-    'Core technical skills',
-    'Explain FundConnectAI',
-    'IoT AutoEncoder project',
-    'Contact information',
+    "What is Ayush's experience with PyTorch and Machine Learning?",
+    "Tell me about the FundConnect AI project.",
+    "What technologies does Ayush specialize in?",
   ];
 
   const scrollToBottom = () => {
@@ -114,25 +115,17 @@ export default function Chatbot({ isOpen, setIsOpen }) {
     const query = textToSend || input;
     if (!query.trim() || loading) return;
 
-    const userMessage = { role: 'user', content: query.trim() };
-    const updatedMessages = [...messages, userMessage];
-    setMessages(updatedMessages);
-    setInput('');
+    const userMessage = { role: 'user', content: query };
+    setMessages((prev) => [...prev, userMessage]);
+    if (!textToSend) setInput('');
     setLoading(true);
 
     try {
-      // Send message and recent conversation history
-      const historyPayload = messages.slice(-6).map((m) => ({
-        role: m.role,
-        content: m.content,
-      }));
-
       const res = await fetch('/api/chat', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({
-          message: query.trim(),
-          history: historyPayload,
+          messages: [...messages, userMessage],
         }),
       });
 
@@ -168,7 +161,7 @@ export default function Chatbot({ isOpen, setIsOpen }) {
   return (
     <>
       {/* Floating Toggle Pill */}
-      <div className="assistant-pill-fixed">
+      <div className={`assistant-pill-fixed ${contentVisible ? 'visible' : 'hidden-during-intro'}`}>
         <button
           className="assistant-pill"
           onClick={() => setIsOpen(!isOpen)}
@@ -282,6 +275,17 @@ export default function Chatbot({ isOpen, setIsOpen }) {
           bottom: 1.75rem;
           right: 1.75rem;
           z-index: 999;
+          animation: pillFadeIn 0.7s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+        }
+        @keyframes pillFadeIn {
+          from {
+            opacity: 0;
+            transform: translateY(20px) scale(0.95);
+          }
+          to {
+            opacity: 1;
+            transform: translateY(0) scale(1);
+          }
         }
         .assistant-pill {
           display: flex;
