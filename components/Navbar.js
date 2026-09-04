@@ -3,6 +3,7 @@ import React, { useState, useEffect } from 'react';
 import { FileText, ArrowUpRight } from 'lucide-react';
 import SpecularButton from './SpecularButton';
 import PillNav from './PillNav';
+import { smoothScrollToSection, getSectionScrollTop } from '@/lib/smoothScroll';
 
 export default function Navbar({ onOpenChat }) {
   const [activeSection, setActiveSection] = useState('#about');
@@ -14,16 +15,17 @@ export default function Navbar({ onOpenChat }) {
     { label: 'Training', href: '#training' },
     { label: 'Certifications', href: '#certifications' },
     { label: 'Education', href: '#education' },
+    { label: 'Experience', href: '#experience' }
   ];
 
   useEffect(() => {
     const handleScroll = () => {
-      const sections = ['education', 'certifications', 'training', 'projects', 'skills', 'about'];
-      const scrollPos = window.scrollY + 220;
+      const sections = ['experience', 'education', 'certifications', 'training', 'projects', 'skills', 'about'];
+      const scrollPos = window.scrollY + 180;
 
       for (const sectionId of sections) {
-        const el = document.getElementById(sectionId);
-        if (el && el.offsetTop <= scrollPos) {
+        const targetTop = getSectionScrollTop(sectionId);
+        if (typeof targetTop === 'number' && targetTop <= scrollPos) {
           setActiveSection(`#${sectionId}`);
           break;
         }
@@ -37,7 +39,11 @@ export default function Navbar({ onOpenChat }) {
   return (
     <header className="nav-header">
       <div className="nav-container">
-        <a href="#" className="brand">
+        <a
+          href="#about"
+          className="brand"
+          onClick={e => smoothScrollToSection('about', e)}
+        >
           <span className="brand-name">Ayush Dey</span>
           <span className="brand-role">Software Engineer</span>
         </a>

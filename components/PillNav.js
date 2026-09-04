@@ -2,6 +2,7 @@
 import { useEffect, useRef, useState } from 'react';
 import Link from 'next/link';
 import { gsap } from 'gsap';
+import { smoothScrollToSection } from '@/lib/smoothScroll';
 import './PillNav.css';
 
 const PillNav = ({
@@ -210,6 +211,19 @@ const PillNav = ({
     onMobileMenuClick?.();
   };
 
+  const handleAnchorClick = (href, e) => {
+    if (href && href.startsWith('#')) {
+      smoothScrollToSection(href, e);
+    }
+  };
+
+  const handleMobileAnchorClick = (href, e) => {
+    setIsMobileMenuOpen(false);
+    if (href && href.startsWith('#')) {
+      smoothScrollToSection(href, e);
+    }
+  };
+
   const isExternalLink = href =>
     !href ||
     href.startsWith('http://') ||
@@ -252,6 +266,7 @@ const PillNav = ({
               href={items?.[0]?.href || '#'}
               aria-label="Home"
               onMouseEnter={handleLogoEnter}
+              onClick={e => handleAnchorClick(items?.[0]?.href || '#about', e)}
               ref={el => {
                 logoRef.current = el;
               }}
@@ -296,6 +311,7 @@ const PillNav = ({
                     aria-label={item.ariaLabel || item.label}
                     onMouseEnter={() => handleEnter(i)}
                     onMouseLeave={() => handleLeave(i)}
+                    onClick={e => handleAnchorClick(item.href, e)}
                   >
                     <span
                       className="hover-circle"
@@ -344,7 +360,7 @@ const PillNav = ({
                 <a
                   href={item.href}
                   className={`mobile-menu-link${activeHref === item.href ? ' is-active' : ''}`}
-                  onClick={() => setIsMobileMenuOpen(false)}
+                  onClick={e => handleMobileAnchorClick(item.href, e)}
                 >
                   {item.label}
                 </a>

@@ -253,6 +253,30 @@ const ScrollStack = ({
       lenisRef.current = lenisInstance;
     }
 
+    if (typeof window !== 'undefined') {
+      window.__lenis = lenisInstance;
+      window.__getScrollTargetForSection = sectionId => {
+        const cleanId = (sectionId || '').replace(/^#/, '').toLowerCase();
+        if (!cleanId || cleanId === 'about' || cleanId === 'top' || cleanId === 'hero') return 0;
+
+        const targetEl = document.getElementById(cleanId);
+        if (!targetEl) return null;
+
+        const card = targetEl.closest('.scroll-stack-card') || targetEl;
+        const idx = cardsRef.current.indexOf(card);
+        if (idx === -1) return null;
+
+        const cardTop = cardTopsRef.current[idx];
+        if (typeof cardTop !== 'number') return null;
+
+        const containerHeight = window.innerHeight;
+        const stackPositionPx = parsePercentage(stackPosition, containerHeight);
+        const targetPinTop = stackPositionPx + itemStackDistance * idx;
+
+        return Math.max(0, cardTop - targetPinTop);
+      };
+    }
+
     // Passive resize observer to re-measure if contents expand
     const resizeObserver = new ResizeObserver(() => {
       measureStaticTops();
@@ -271,6 +295,12 @@ const ScrollStack = ({
       }
       if (lenisRef.current) {
         lenisRef.current.destroy();
+      }
+      if (typeof window !== 'undefined') {
+        if (window.__lenis === lenisRef.current) {
+          window.__lenis = null;
+        }
+        window.__getScrollTargetForSection = null;
       }
       resizeObserver.disconnect();
       window.removeEventListener('resize', measureStaticTops);

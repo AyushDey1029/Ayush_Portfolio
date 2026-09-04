@@ -3,6 +3,7 @@ import React from 'react';
 import { ArrowUp, Mail, ArrowUpRight } from 'lucide-react';
 import { Github, Linkedin } from './Icons';
 import SpecularButton from './SpecularButton';
+import { smoothScrollToSection } from '@/lib/smoothScroll';
 
 export default function Footer({ aboutData = [] }) {
   const contacts = aboutData.filter(item => item.Category === 'Contact');
@@ -11,8 +12,12 @@ export default function Footer({ aboutData = [] }) {
   const github = contacts.find(c => c.Key === 'github')?.Value || 'github.com/AyushDey1029';
   const linkedin = contacts.find(c => c.Key === 'linkedin')?.Value || 'linkedin.com/in/ayush--dey';
 
-  const scrollToTop = () => {
-    window.scrollTo({ top: 0, behavior: 'smooth' });
+  const scrollToTop = e => {
+    smoothScrollToSection('about', e);
+  };
+
+  const handleNavClick = (href, e) => {
+    smoothScrollToSection(href, e);
   };
 
   const navLinks = [
@@ -65,7 +70,12 @@ export default function Footer({ aboutData = [] }) {
         <div className="footer-nav-row">
           <nav className="footer-links" aria-label="Footer navigation">
             {navLinks.map(link => (
-              <a key={link.name} href={link.href} className="footer-link">
+              <a
+                key={link.name}
+                href={link.href}
+                className="footer-link"
+                onClick={e => handleNavClick(link.href, e)}
+              >
                 {link.name}
               </a>
             ))}
@@ -236,6 +246,8 @@ export default function Footer({ aboutData = [] }) {
           font-size: 0.88rem;
           font-family: var(--font-mono, monospace);
           transition: color 0.15s ease;
+          cursor: pointer;
+          text-decoration: none;
         }
 
         .footer-link:hover {
