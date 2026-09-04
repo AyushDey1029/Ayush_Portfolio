@@ -119,6 +119,7 @@ export default function Footer({ aboutData = [] }) {
           padding: 4rem 0 6rem;
           position: relative;
           z-index: 20;
+          pointer-events: auto;
         }
 
         .footer-glass-card {

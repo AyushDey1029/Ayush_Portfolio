@@ -38,6 +38,7 @@
   position: relative;
   z-index: 20;
   transition: opacity 0.85s cubic-bezier(0.16, 1, 0.3, 1);
+  pointer-events: none;
 }
 
 .portfolio-content-wrap.hidden-during-intro {
@@ -47,5 +48,9 @@
 
 .portfolio-content-wrap.visible {
   opacity: 1;
-  pointer-events: auto;
+  pointer-events: none;
+}
+
+.portfolio-content-wrap .container {
+  pointer-events: none;
 }

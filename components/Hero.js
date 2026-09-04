@@ -127,16 +127,19 @@ export default function Hero({ aboutData = [], contentVisible = false }) {
           padding: 3.5rem 0 3rem;
           border-bottom: 1px solid var(--border-subtle);
           position: relative;
+          pointer-events: none;
         }
         .hero-grid {
           display: grid;
           grid-template-columns: 1.15fr 0.85fr;
           gap: 2.5rem;
           align-items: center;
+          pointer-events: none;
         }
         .hero-left-content {
           position: relative;
           z-index: 20;
+          pointer-events: auto;
         }
         .hero-right-space {
           pointer-events: none;
