@@ -121,10 +121,17 @@ export default function Chatbot({ isOpen, setIsOpen, contentVisible = false }) {
     setLoading(true);
 
     try {
+      const historyPayload = messages.slice(-6).map((m) => ({
+        role: m.role,
+        content: m.content,
+      }));
+
       const res = await fetch('/api/chat', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({
+          message: query.trim(),
+          history: historyPayload,
           messages: [...messages, userMessage],
         }),
       });

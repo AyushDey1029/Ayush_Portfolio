@@ -101,8 +101,20 @@ export async function POST(req) {
     }
 
     const body = await req.json().catch(() => ({}));
-    const rawMessage = body.message;
-    const history = Array.isArray(body.history) ? body.history : [];
+    let rawMessage = body.message;
+    let history = Array.isArray(body.history) ? body.history : [];
+
+    // Fallback: Support { messages: [...] } array payload
+    if (!rawMessage && Array.isArray(body.messages) && body.messages.length > 0) {
+      const lastMsg = body.messages[body.messages.length - 1];
+      rawMessage = typeof lastMsg === 'string' ? lastMsg : (lastMsg?.content || '');
+      if (history.length === 0 && body.messages.length > 1) {
+        history = body.messages.slice(0, -1).map(m => ({
+          role: m.role || 'user',
+          content: m.content || (typeof m === 'string' ? m : '')
+        }));
+      }
+    }
 
     const message = sanitizeInput(rawMessage);
     if (!message) {
