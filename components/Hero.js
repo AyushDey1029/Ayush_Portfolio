@@ -2,6 +2,7 @@ import React from 'react';
 import { Mail, ArrowUpRight } from 'lucide-react';
 import { Github, Linkedin } from './Icons';
 import SpecularButton from './SpecularButton';
+import FadeContent from './FadeContent';
 
 export default function Hero({ aboutData = [], contentVisible = false }) {
   const introTexts = aboutData.filter(item => item.Category === 'Narrative').map(i => i.Value);
@@ -24,9 +25,17 @@ export default function Hero({ aboutData = [], contentVisible = false }) {
   return (
     <section className="hero-wrap">
       <div className="hero-grid">
-        {/* Left Column: Information with dynamic pop-out */}
+        {/* Left Column: Information with dynamic fade in/out */}
         <div className={`hero-left-content ${contentVisible ? 'popping-out' : 'pre-pop'}`}>
-          {/* Status indicator */}
+          <FadeContent
+            blur={true}
+            duration={1650}
+            direction="left-to-right"
+            initialOpacity={0}
+            triggerWhen={contentVisible}
+            fadeOutOnScroll={true}
+          >
+            {/* Status indicator */}
           <div className="status-container">
             <span className="status-pill">
               <span className="status-dot" />
@@ -116,6 +125,7 @@ export default function Hero({ aboutData = [], contentVisible = false }) {
               <ArrowUpRight size={14} className="arrow-icon" />
             </SpecularButton>
           </div>
+          </FadeContent>
         </div>
 
         {/* Right Column Grid Placeholder: Reserved for docked card */}
@@ -147,32 +157,10 @@ export default function Hero({ aboutData = [], contentVisible = false }) {
         .hero-left-content.pre-pop {
           opacity: 0;
           pointer-events: none;
-          transform: translateX(-40px);
         }
         .hero-left-content.popping-out {
           opacity: 1;
           pointer-events: auto;
-          transform: translateX(0);
-        }
-        .hero-left-content.popping-out > * {
-          animation: popOutContent 0.85s cubic-bezier(0.16, 1, 0.3, 1) both;
-          will-change: transform, opacity;
-        }
-        .hero-left-content.popping-out > *:nth-child(1) { animation-delay: 0.05s; }
-        .hero-left-content.popping-out > *:nth-child(2) { animation-delay: 0.15s; }
-        .hero-left-content.popping-out > *:nth-child(3) { animation-delay: 0.25s; }
-        .hero-left-content.popping-out > *:nth-child(4) { animation-delay: 0.35s; }
-        .hero-left-content.popping-out > *:nth-child(5) { animation-delay: 0.45s; }
-
-        @keyframes popOutContent {
-          0% {
-            opacity: 0;
-            transform: translateX(-35px) scale(0.98);
-          }
-          100% {
-            opacity: 1;
-            transform: translateX(0) scale(1);
-          }
         }
 
         .status-container {
