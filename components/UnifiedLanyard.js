@@ -24,7 +24,6 @@ const BACK_UV_RECT = { x: 0.5, y: 0, w: 0.5, h: 0.757 };
 export default function UnifiedLanyard({ onSlideStart }) {
   const [phase, setPhase] = useState('dropping');
   const [isMobile, setIsMobile] = useState(false);
-  const [textureMode, setTextureMode] = useState('craft');
   const [mounted, setMounted] = useState(false);
   const [reducedMotion, setReducedMotion] = useState(false);
   const hasPlayedRef = useRef(false);
@@ -47,7 +46,6 @@ export default function UnifiedLanyard({ onSlideStart }) {
     if (reducedMotion && mounted && !hasPlayedRef.current) {
       hasPlayedRef.current = true;
       setPhase('docked');
-      setTextureMode('profile');
       if (onSlideStart) onSlideStart();
     }
   }, [reducedMotion, mounted, onSlideStart]);
@@ -60,7 +58,6 @@ export default function UnifiedLanyard({ onSlideStart }) {
   const handleSwingDone = useCallback(() => {
     if (phase !== 'settling') return;
     setPhase('shifting');
-    setTextureMode('profile');
     if (onSlideStart) onSlideStart();
   }, [phase, onSlideStart]);
 
@@ -73,7 +70,6 @@ export default function UnifiedLanyard({ onSlideStart }) {
   const handleSkip = useCallback(() => {
     if (phase === 'docked' || phase === 'shifting') return;
     setPhase('shifting');
-    setTextureMode('profile');
     if (onSlideStart) onSlideStart();
   }, [phase, onSlideStart]);
 
@@ -110,7 +106,6 @@ export default function UnifiedLanyard({ onSlideStart }) {
             <LanyardBand
               isMobile={isMobile}
               phase={phase}
-              textureMode={textureMode}
               onSettled={handleSettled}
               onSwingDone={handleSwingDone}
               onDocked={handleDocked}
@@ -169,7 +164,6 @@ function buildCompositeTexture(baseMap, frontImg, backImg) {
 function LanyardBand({
   isMobile,
   phase,
-  textureMode,
   onSettled,
   onSwingDone,
   onDocked,
@@ -188,20 +182,13 @@ function LanyardBand({
 
   const { nodes, materials } = useGLTF('/assets/lanyard/card.glb');
   const texture = useTexture('/assets/lanyard/lanyard.png');
-  const craftTex = useTexture('/assets/lanyard/card-front.png');
   const profileTex = useTexture('/assets/lanyard/card-profile.png');
   const backTex = useTexture('/assets/lanyard/card-back.png');
 
-  // Pre-generate composite textures once to prevent stutter during live transitions
-  const craftMap = useMemo(() => {
-    return buildCompositeTexture(materials.base?.map, craftTex?.image, backTex?.image);
-  }, [craftTex?.image, backTex?.image, materials.base?.map]);
-
-  const profileMap = useMemo(() => {
+  // Pre-generate composite texture with the user's profile photo badge
+  const cardMap = useMemo(() => {
     return buildCompositeTexture(materials.base?.map, profileTex?.image, backTex?.image);
   }, [profileTex?.image, backTex?.image, materials.base?.map]);
-
-  const cardMap = textureMode === 'profile' ? profileMap : craftMap;
 
   // Seamlessly bridge and fill the circular punch hole in card.glb (cached across renders)
   const cardGeometry = useMemo(() => {
@@ -528,18 +515,11 @@ function LanyardBand({
           lineWidth={isMobile ? 1.15 : 1.35}
         />
       </mesh>
-
-      {/* Pre-warm profile texture into GPU VRAM to ensure 0ms swap latency */}
-      <mesh position={[0, -100, 0]} visible={false}>
-        <planeGeometry args={[0.01, 0.01]} />
-        <meshBasicMaterial map={profileMap} />
-      </mesh>
     </>
   );
 }
 
 useGLTF.preload('/assets/lanyard/card.glb');
 useTexture.preload('/assets/lanyard/lanyard.png');
-useTexture.preload('/assets/lanyard/card-front.png');
 useTexture.preload('/assets/lanyard/card-profile.png');
 useTexture.preload('/assets/lanyard/card-back.png');
