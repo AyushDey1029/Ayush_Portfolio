@@ -2,7 +2,7 @@ const fs = require('fs');
 const path = require('path');
 const sharp = require('sharp');
 
-const userPhotoPath = 'C:\\Users\\Ayush\\.gemini\\antigravity-ide\\brain\\5b54c791-96f5-4f3b-96f3-6d40541a21ec\\.user_uploaded\\media_1788454825521.jpg';
+const userPhotoPath = path.join(__dirname, 'public', 'assets', 'lanyard', 'user-photo.jpg');
 const outputDir = path.join(__dirname, 'public', 'assets', 'lanyard');
 
 async function createProfileCard() {
